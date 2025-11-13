@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -7,20 +8,16 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public Transform cameraTransform;
     public float rotationSpeed = 7f;
-    public float jumpForce = 5f;
-    public float rollForce = 15f;
 
-    float speed = 2;
+    float speed = 4;
     private bool isGrounded = true;
 
 
-    public float attackCooldown = 0.25f;
-    public float rollCooldown = 2f;
-    public float jumpCooldown = 1f;
+    public float attackCool = 0.25f;
+    public float TeleportCool = 2f;
 
     public float attackTimer = 0;
-    public float rollTimer = 0;
-    public float jumpTimer = 0;
+    public float TeleportTimer = 0;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -44,12 +41,8 @@ public class PlayerController : MonoBehaviour
     {
         
         // 쿨타임 처리 코드...
-        if (attackTimer < attackCooldown) attackTimer = Mathf.Clamp(attackTimer + Time.deltaTime, 0, attackCooldown);
-        if (rollTimer < rollCooldown) rollTimer = Mathf.Clamp(rollTimer + Time.deltaTime, 0, rollCooldown);
-        if (jumpTimer < jumpCooldown) jumpTimer = Mathf.Clamp(jumpTimer + Time.deltaTime, 0, jumpCooldown);
-
-
-
+        if (attackTimer < attackCool) attackTimer = Mathf.Clamp(attackTimer + Time.deltaTime, 0, attackCool);
+        if (TeleportTimer < TeleportCool) TeleportTimer = Mathf.Clamp(TeleportTimer + Time.deltaTime, 0, TeleportCool);
 
     }
 
@@ -91,23 +84,9 @@ public class PlayerController : MonoBehaviour
 
     void HandleActions()
     {
-        // 점프
-        if (Input.GetKeyDown(KeyCode.Space) && jumpTimer >= jumpCooldown && isGrounded)
-        {
-            jumpTimer = 0f;
-            isGrounded = false;
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-
-            animator.SetTrigger("Jump");
-
-
-
-            Debug.Log("점프!");
-        }
-
+        
         // 공격
-        if (Input.GetMouseButtonDown(0) && attackTimer >= attackCooldown )
+        if (Input.GetMouseButtonDown(0) && attackTimer >= attackCool )
         {
             attackTimer = 0;
             animator.SetTrigger("Attack");
@@ -115,33 +94,17 @@ public class PlayerController : MonoBehaviour
             Debug.Log("공격!");
         }
 
-        // 구르기
-        if (Input.GetKeyDown(KeyCode.LeftShift) && rollTimer >= rollCooldown && isGrounded)
+        // 텔레포트
+        if (Input.GetKeyDown(KeyCode.LeftShift) && TeleportTimer >= TeleportCool && isGrounded)
         {
-            rollTimer = 0f;
+            TeleportTimer = 0f;
+
+            transform.position += transform.forward * 5;
             animator.SetTrigger("Roll");
 
-            // 구르기 방향 계산
-            Vector3 rollDir = transform.forward;
-
-            RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, 1.5f))
-            {
-                Vector3 groundNormal = hit.normal;
-                rollDir = Vector3.ProjectOnPlane(transform.forward, groundNormal).normalized;
-            }
-            else
-            {
-                rollDir = transform.forward.normalized;
-            }
-
-            Debug.Log("구르기!");
         }
-
-
     }
-
-
+    
     /*
     public void OnMove(InputValue value)
     {
