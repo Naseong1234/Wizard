@@ -9,6 +9,8 @@ public class MonsterGenerator : MonoBehaviour
     public GameObject Bomb_Slime;
     public GameObject Normal_Slime;
     public GameObject Skeleton_warrior;
+    public GameObject Skeleton_Archer;
+
     public float createTime = 0.3f;
 
 
@@ -34,18 +36,22 @@ public class MonsterGenerator : MonoBehaviour
         currentTime += Time.deltaTime;
         if (currentTime > createTime)// 현재 시간이 생성주기를 넘으면
         {
-            if (1 <= monsterSpawn && monsterSpawn <= 3)
+            if (1 <= monsterSpawn && monsterSpawn <= 2.5)
             {
                 monster = Instantiate(Bomb_Slime);
                 
             }
-            else if (4 <= monsterSpawn && monsterSpawn <= 6)
+            else if (2.5 < monsterSpawn && monsterSpawn <= 5)
             {
                 monster = Instantiate(Normal_Slime);
             }
-            else if (7 <= monsterSpawn && monsterSpawn <= 10)
+            else if (5 < monsterSpawn && monsterSpawn <= 7.5)
             {
                 monster = Instantiate(Skeleton_warrior);
+            }
+            else if (7.5 < monsterSpawn && monsterSpawn <= 10)
+            {
+                monster = Instantiate(Skeleton_Archer);
             }
             Vector3 playerPos = Player.transform.position; // 플레이어 위치 가져오기
 
@@ -56,8 +62,7 @@ public class MonsterGenerator : MonoBehaviour
 
             // 2. 2D(x, y) 좌표를 3D(x, z) 좌표로 변환하여 플레이어 위치에 더함
             // y축은 높이이므로 1로 고정하거나, playerPos.y를 사용
-            Vector3 spawnPos = new Vector3(randomCircle.x, 1f, randomCircle.y) + playerPos;
-            spawnPos.y = 1f; // 높이는 1로 고정
+            Vector3 spawnPos = new Vector3(randomCircle.x, 0.1f, randomCircle.y) + playerPos;
 
             monster.transform.position = spawnPos;
 

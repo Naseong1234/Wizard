@@ -152,6 +152,7 @@ MonoBehaviour:
   Bomb_Slime: {fileID: 1609236668544396477, guid: 1c0171eb72298454280912fc74beafc0, type: 3}
   Normal_Slime: {fileID: 8712508206384988780, guid: afabdc03c3f87944b9bfc8f25f24eeb1, type: 3}
   Skeleton_warrior: {fileID: 601338660872130166, guid: d3edfbea06006504f950d8e99ce3c13c, type: 3}
+  Skeleton_Archer: {fileID: 601338660872130166, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
   createTime: 1
 --- !u!4 &40726435
 Transform:
@@ -161,70 +162,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 40726433}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.56843936, y: -1.1487106, z: -3.971611}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1832560374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &224058937
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 221717618922247372, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 601338660872130166, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
-      propertyPath: m_Name
-      value: Skeleton_Archer
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
 --- !u!1 &330585543
 GameObject:
   m_ObjectHideFlags: 0
@@ -237,6 +181,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -311,8 +256,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.23945057, y: -0.008452358, z: 0.0020662043, w: -0.9708696}
-  m_LocalPosition: {x: -0.27285564, y: 5.017704, z: -5.037492}
+  m_LocalRotation: {x: -0.29034233, y: 0.012355751, z: -0.0037502395, w: -0.95683575}
+  m_LocalPosition: {x: -0.13943085, y: 8.860088, z: -12.86009}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -362,6 +307,19 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f900d825f22c7364bb1bb68aba3f82e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1248815163046033}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -516,6 +474,7 @@ MonoBehaviour:
   Bomb_Slime: {fileID: 1609236668544396477, guid: 1c0171eb72298454280912fc74beafc0, type: 3}
   Normal_Slime: {fileID: 8712508206384988780, guid: afabdc03c3f87944b9bfc8f25f24eeb1, type: 3}
   Skeleton_warrior: {fileID: 601338660872130166, guid: d3edfbea06006504f950d8e99ce3c13c, type: 3}
+  Skeleton_Archer: {fileID: 601338660872130166, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
   createTime: 1
 --- !u!4 &658811159
 Transform:
@@ -525,12 +484,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 658811156}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.56843936, y: -1.1487106, z: -3.971611}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1832560374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832575517
 GameObject:
@@ -690,6 +649,40 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1832560373
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1832560374}
+  m_Layer: 0
+  m_Name: Monster Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1832560374
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1832560373}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.56843936, y: 1.1487106, z: 3.971611}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 658811159}
+  - {fileID: 2022635325}
+  - {fileID: 40726435}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2022635323
 GameObject:
   m_ObjectHideFlags: 0
@@ -723,6 +716,7 @@ MonoBehaviour:
   Bomb_Slime: {fileID: 1609236668544396477, guid: 1c0171eb72298454280912fc74beafc0, type: 3}
   Normal_Slime: {fileID: 8712508206384988780, guid: afabdc03c3f87944b9bfc8f25f24eeb1, type: 3}
   Skeleton_warrior: {fileID: 601338660872130166, guid: d3edfbea06006504f950d8e99ce3c13c, type: 3}
+  Skeleton_Archer: {fileID: 601338660872130166, guid: 3f25f6f9ef9fe224f9f064eb855fdb8c, type: 3}
   createTime: 1
 --- !u!4 &2022635325
 Transform:
@@ -732,12 +726,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022635323}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.56843936, y: -1.1487106, z: -3.971611}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1832560374}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1248815163046033 stripped
 GameObject:
@@ -814,7 +808,4 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 1516816676}
   - {fileID: 7481195172204353637}
-  - {fileID: 658811159}
-  - {fileID: 2022635325}
-  - {fileID: 40726435}
-  - {fileID: 224058937}
+  - {fileID: 1832560374}
