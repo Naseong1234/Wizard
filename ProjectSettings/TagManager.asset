@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Skeleton_warrior
+  - Skeleton_Archer
+  - Normal_Slime
+  - Bomb_Slime
+  - PlayerAttack
   layers:
   - Default
   - TransparentFX

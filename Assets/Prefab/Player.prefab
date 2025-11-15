@@ -933,7 +933,7 @@ GameObject:
   - component: {fileID: 1609273398641574267}
   m_Layer: 0
   m_Name: Staff01PolyArt
-  m_TagString: Untagged
+  m_TagString: PlayerAttack
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
