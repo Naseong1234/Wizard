@@ -5,7 +5,7 @@ public class MonsterController : MonoBehaviour
 {
     public float speed = 2f;
 
-    GameObject target;
+    private GameObject target;
 
     void Start()
     {

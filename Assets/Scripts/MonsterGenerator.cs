@@ -63,30 +63,30 @@ public class MonsterGenerator : MonoBehaviour
                 monster = Instantiate(Skeleton_Archer);
             }
 
+            // 2. 제너레이터 정보 전달
             if (monster != null)
             {
                 MonsterAnimation monsterScript = monster.GetComponent<MonsterAnimation>();
-                if (monsterScript != null)
-                {
-                    // SetGenerator 함수를 호출하며 'this'(이 스크립트 자신)를 넘겨줍니다.
-                    monsterScript.SetGenerator(this);
-                }
+                if (monsterScript != null) monsterScript.SetGenerator(this);
             }
 
-            Vector3 playerPos = Player.transform.position; // 플레이어 위치 가져오기
+            // 1. 랜덤한 '방향'을 구합니다. (반지름 1인 원의 테두리 어딘가)
+            Vector2 randomDir = Random.insideUnitCircle.normalized;
 
-            // 1. 랜덤한 방향(normalized)을 구하고, 3~6 사이의 거리를 곱함
-            // insideUnitCircle은 반지름 1짜리 원 안의 랜덤 좌표를 줍니다.
-            // .normalized를 하면 방향만 남고(길이 1), 여기에 원하는 거리를 곱합니다.
-            Vector2 randomCircle = Random.insideUnitCircle.normalized * Random.Range(6f, 9f);
+            // 2. '거리'를 6 ~ 9 사이에서 랜덤으로 정합니다.
+            float randomDistance = Random.Range(8f, 10f);
 
-            // 2. 2D(x, y) 좌표를 3D(x, z) 좌표로 변환하여 플레이어 위치에 더함
-            // y축은 높이이므로 1로 고정하거나, playerPos.y를 사용
-            Vector3 spawnPos = new Vector3(randomCircle.x, 0.1f, randomCircle.y) + playerPos;
+            // 3. (방향 * 거리)를 해서 최종 오프셋을 만듭니다.
+            Vector2 spawnOffset = randomDir * randomDistance;
+
+            // 4. 플레이어 위치에 더해줍니다. (Y축은 0.1f로 고정)
+            Vector3 playerPos = Player.transform.position;
+            Vector3 spawnPos = new Vector3(spawnOffset.x, 0.1f, spawnOffset.y) + playerPos;
 
             monster.transform.position = spawnPos;
 
-            currentTime = 0;// 생성주기를 0으로 초기화 한다
+            // 다음 생성 준비
+            currentTime = 0;
             createTime = Random.Range(minTime, maxTime);
             monsterSpawn = Random.Range(1, 11);
             currentMonster += 1;

@@ -1,9 +1,11 @@
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public class MonsterAnimation : MonoBehaviour
 {
     [Header("플레이어 및 공격 설정")]
-    public Transform player;
+    GameObject player;
+    public Transform playerTransform;
     public float closeAttackRange = 1.5f; // 근접 공격 범위 (약간 늘림)
     public float longAttackRange = 20f;   // 원거리 공격 범위
     public float attackCooldown = 1f;
@@ -13,6 +15,12 @@ public class MonsterAnimation : MonoBehaviour
     public float maxHealth = 100f;
     public float currentHealth;
 
+    [Header("이펙트 설정")]
+    public GameObject explosionEffectPrefab; // 인스펙터에 폭발 파티클 프리팹을 꼭 넣어주세요!
+
+    // 중복 실행 방지용 플래그
+    private bool isExploding = false;
+
     // 컴포넌트
     private ArrowGenerator arrowGenerator; // 내 자식에 있는 제너레이터
     private MonsterGenerator myGenerator;
@@ -21,6 +29,7 @@ public class MonsterAnimation : MonoBehaviour
     private bool isDead = false;
     void Start()
     {
+        player = GameObject.Find("Player");// Player이라는 이름의 오브젝트를 찾은뒤
         animator = GetComponent<Animator>();
         currentHealth = maxHealth;
         lastPosition = transform.position;
@@ -29,15 +38,14 @@ public class MonsterAnimation : MonoBehaviour
         // 이렇게 해야 다른 몬스터의 활이 아니라 '내 활'을 찾습니다.
         arrowGenerator = GetComponentInChildren<ArrowGenerator>();
 
-        if (player == null)
-        {
-            GameObject playerObject = GameObject.FindWithTag("Player");
-            if (playerObject != null) player = playerObject.transform;
-        }
+
+        
     }
 
     void Update()
     {
+        playerTransform = player.transform;
+
         if (isDead || player == null) return;
 
         attackTimer += Time.deltaTime;
@@ -59,7 +67,11 @@ public class MonsterAnimation : MonoBehaviour
         // 쿨타임이 아직 안 됐으면 공격 불가
         if (attackTimer <= attackCooldown) return;
 
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        // 이미 자폭 시퀀스가 시작되었다면 또 실행하지 않음
+        if (isExploding) return;
+
+
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
         // 1. 스켈레톤 아처의 원거리 공격
         if (gameObject.CompareTag("Skeleton_Archer"))
@@ -79,6 +91,7 @@ public class MonsterAnimation : MonoBehaviour
             switch (gameObject.tag)
             {
                 case "Bomb_Slime":
+                    isExploding = true; // 중복 실행 방지
                     animator.SetTrigger("isBomb");
                     break;
                 case "Normal_Slime":
@@ -154,5 +167,35 @@ public class MonsterAnimation : MonoBehaviour
     public void SetGenerator(MonsterGenerator generator)
     {
         myGenerator = generator;
+    }
+
+    public void OnExplode()
+    {
+        // 1. 폭발 이펙트 생성 (파티클)
+        if (explosionEffectPrefab != null)
+        {
+            GameObject vfx = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
+            Destroy(vfx, 2.0f); // 2초 뒤 이펙트 삭제
+        }
+
+        // 2. 범위 데미지 처리 (반경 2m)
+        Collider[] colliders = Physics.OverlapSphere(transform.position, 2.0f);
+        foreach (Collider col in colliders)
+        {
+            if (col.CompareTag("Player"))
+            {
+                // 플레이어에게 데미지 주기 (예시 코드)
+                // col.GetComponent<PlayerController>().TakeDamage(50);
+                Debug.Log("쾅! 플레이어에게 데미지를 입혔습니다.");
+            }
+        }
+        if (myGenerator != null)
+        {
+            myGenerator.currentMonster -= 1;
+        }
+        
+        // 3. 몬스터 삭제
+        // 폭발했으니 몬스터 본체는 사라져야 합니다.
+        Destroy(gameObject);
     }
 }
