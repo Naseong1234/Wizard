@@ -3,132 +3,103 @@ using UnityEngine;
 public class MonsterAnimation : MonoBehaviour
 {
     [Header("플레이어 및 공격 설정")]
-    public Transform player; // 인스펙터에서 플레이어 Transform을 할당해주세요.
-    public float attackRange = 1f; // 공격을 시작할 거리
-    public float attackCooldown = 2.5f; // 공격 쿨타임 (초)
-    private float attackTimer = 0f; // 마지막 공격 시간 (쿨타임을 위해)
+    public Transform player;
+    public float closeAttackRange = 1.5f; // 근접 공격 범위 (약간 늘림)
+    public float longAttackRange = 20f;   // 원거리 공격 범위
+    public float attackCooldown = 1f;
+    private float attackTimer = 0f;
 
     [Header("몬스터 체력 설정")]
-    public float maxHealth = 100f; // 몬스터 최대 체력
-    public float currentHealth; // 몬스터 현재 체력
+    public float maxHealth = 100f;
+    public float currentHealth;
 
-    // 컴포넌트 및 상태 변수
-    private Animator animator; // 몬스터의 애니메이터 컴포넌트
-    private Vector3 lastPosition; // 이전 프레임의 위치 (이동 감지용)
-    private bool isDead = false; // 몬스터가 죽었는지 여부
-
+    // 컴포넌트
+    private ArrowGenerator arrowGenerator; // 내 자식에 있는 제너레이터
+    private MonsterGenerator myGenerator;
+    private Animator animator;
+    private Vector3 lastPosition;
+    private bool isDead = false;
     void Start()
     {
-        // 1. 컴포넌트 가져오기
         animator = GetComponent<Animator>();
-
-        // 2. 체력 초기화
         currentHealth = maxHealth;
-
-        // 3. 이동 감지를 위한 초기 위치 설정
         lastPosition = transform.position;
 
-        // 4. 플레이어 찾기 (기존 로직)
+        // [수정 핵심] 내 자식 오브젝트들 중에서 ArrowGenerator를 찾습니다.
+        // 이렇게 해야 다른 몬스터의 활이 아니라 '내 활'을 찾습니다.
+        arrowGenerator = GetComponentInChildren<ArrowGenerator>();
+
         if (player == null)
         {
             GameObject playerObject = GameObject.FindWithTag("Player");
-            if (playerObject != null)
-            {
-                player = playerObject.transform;
-            }
-            else
-            {
-                Debug.LogError("플레이어를 찾을 수 없습니다. 'Player' 태그를 확인하거나 인스펙터에서 'player' 변수를 설정해주세요.");
-            }
+            if (playerObject != null) player = playerObject.transform;
         }
     }
 
     void Update()
     {
-        // 1. 몬스터가 죽었으면 아무것도 하지 않음
-        if (isDead)
+        if (isDead || player == null) return;
+
+        // 쿨타임 계산
+        if (attackTimer < attackCooldown)
         {
-            animator.SetBool("isWalking", false); // 죽었으면 걷기 중지
-            return;
+            attackTimer += Time.deltaTime;
         }
 
-        // 2. 플레이어가 없으면 로직 실행 중지
-        if (player == null)
-        {
-            return;
-        }
-
-        if (attackTimer < attackCooldown) attackTimer = Mathf.Clamp(attackTimer + Time.deltaTime, 0, attackCooldown);
-
-
-        // 3. 몬스터 이동 감지
         CheckMovement();
-
-        // 4. 몬스터 공격 로직
         HandleAttack();
     }
 
-    /// <summary>
-    /// 몬스터의 좌표값(위치)이 움직였는지 확인하고 "isWalking" 파라미터를 설정합니다.
-    /// </summary>
     void CheckMovement()
     {
-        // 현재 위치와 이전 프레임 위치의 거리를 계산
         float distanceMoved = Vector3.Distance(transform.position, lastPosition);
-
-        // 아주 약간이라도(0.01f) 움직였으면 걷는 것으로 간주
-        if (distanceMoved > 0.01f)
-        {
-            animator.SetBool("isWalking", true); // "isWalking" bool을 true로 설정
-        }
-        else
-        {
-            animator.SetBool("isWalking", false); // "isWalking" bool을 false로 설정
-        }
-
-        // 다음 프레임에서 비교할 수 있도록 현재 위치를 'lastPosition'에 저장
+        if (distanceMoved > 0.01f) animator.SetBool("isWalking", true);
+        else animator.SetBool("isWalking", false);
         lastPosition = transform.position;
     }
 
-    /// <summary>
-    /// 플레이어와의 거리를 확인하고 공격 쿨타임을 적용하여 공격합니다.
-    /// </summary>
     void HandleAttack()
     {
+        // 쿨타임이 아직 안 됐으면 공격 불가
+        if (attackTimer < attackCooldown) return;
+
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // 공격 범위 안에 있고, (현재 시간 > 마지막 공격 시간 + 쿨타임) 이면
-        if (distanceToPlayer <= attackRange && attackTimer >= attackCooldown)
+        // 1. 스켈레톤 아처의 원거리 공격
+        if (gameObject.CompareTag("Skeleton_Archer"))
         {
-            // 마지막 공격 시간 갱신
+            if (distanceToPlayer <= longAttackRange)
+            {
+                // 1. 애니메이션 실행
+                animator.SetTrigger("Attack1");
 
-            // 태그별 공격 트리거 발동
+                // 2. 화살 발사
+                // (애니메이션과 싱크를 맞추려면 사실 애니메이션 이벤트(Animation Event)를 쓰는 게 가장 좋지만,
+                // 지금은 간단히 여기서 바로 호출합니다.)
+                if (arrowGenerator != null)
+                {
+                    arrowGenerator.FireArrow();
+                }
+
+                attackTimer = 0; // 쿨타임 초기화
+            }
+        }
+        // 2. 다른 근접 몬스터들의 공격
+        else if (distanceToPlayer <= closeAttackRange)
+        {
             switch (gameObject.tag)
             {
                 case "Bomb_Slime":
                     animator.SetTrigger("isBomb");
                     break;
-
                 case "Normal_Slime":
-                    // 참고: 트리거를 동시에 여러 개 발동하면 마지막 것만 실행될 수 있습니다.
-                    // 하나의 공격 애니메이션을 랜덤하게 재생하는 것이 더 좋습니다.
-                    animator.SetTrigger("Attack1");
-                    // animator.SetTrigger("Attack3"); // 주석 처리 (Attack1만 실행 권장)
-                    break;
-
-                case "Skeleton_Archer":
                     animator.SetTrigger("Attack1");
                     break;
-
                 case "Skeleton_warrior":
-                    // 위와 동일하게 하나의 트리거만 사용하는 것을 권장합니다.
                     animator.SetTrigger("Attack1");
-                    // animator.SetTrigger("Attack2");
-                    // animator.SetTrigger("Attack3");
                     break;
             }
-            attackTimer = 0;
-
+            attackTimer = 0; // 쿨타임 초기화
         }
     }
 
@@ -173,21 +144,26 @@ public class MonsterAnimation : MonoBehaviour
         }
     }
 
+
     /// <summary>
     /// 몬스터가 죽었을 때 처리하는 함수
     /// </summary>
     void Die()
     {
-        isDead = true; // 죽음 상태로 변경 (Update, OnTriggerEnter가 더 이상 작동 안 함)
-
-        // "isDead" bool을 true로 설정 (요청하신 'isDie' 트리거 대신 bool 사용)
+        isDead = true;
         animator.SetTrigger("isDie");
-        Destroy(gameObject, 1.5f);
 
-        // (선택 사항) NavMeshAgent를 사용 중이라면 멈추기
-        // if (GetComponent<UnityEngine.AI.NavMeshAgent>() != null)
-        // {
-        //     GetComponent<UnityEngine.AI.NavMeshAgent>().isStopped = true;
-        // }
+        // [수정] 나를 만든 제너레이터가 존재한다면, 그 제너레이터의 숫자만 줄입니다.
+        if (myGenerator != null)
+        {
+            myGenerator.currentMonster -= 1;
+        }
+
+        Destroy(gameObject, 1.5f);
+    }
+
+    public void SetGenerator(MonsterGenerator generator)
+    {
+        myGenerator = generator;
     }
 }
