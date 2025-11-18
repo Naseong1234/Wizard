@@ -21,10 +21,12 @@ public class ArrowGenerator : MonoBehaviour
     {
         if (arrowPrefab == null || player == null) return;
 
-        // 1. 발사 위치(이 스크립트가 붙은 활)가 플레이어를 바라보게 회전
-        transform.LookAt(player.position); // 약간 위쪽(가슴) 조준
+        // 1. 활이 플레이어를 바라보게 함 (조준)
+        // 주의: Vector3.up * 0.5f는 Up벡터 설정이므로 조준점 오프셋이 아닙니다. 
+        // 조준점을 올리려면 position에 더해야 합니다.
+        transform.LookAt(player.position + Vector3.up * 0.8f);
 
-        // 2. 화살 생성 (위치와 회전값은 현재 활의 상태를 따라감)
+        // 2. 화살 생성 (중요: 활의 위치와 회전값을 그대로 물려받음)
         Instantiate(arrowPrefab, transform.position, transform.rotation);
     }
 }

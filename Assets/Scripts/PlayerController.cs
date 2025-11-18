@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public Transform cameraTransform;
     public float rotationSpeed = 7f;
 
-    float speed = 4;
+    float speed = 6;
     private bool isGrounded = true;
 
 

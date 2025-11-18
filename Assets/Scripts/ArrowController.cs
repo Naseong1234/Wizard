@@ -4,7 +4,8 @@ using static UnityEngine.GraphicsBuffer;
 public class ArrowController : MonoBehaviour
 {
     private float speed = 6f; // 화살 속도
-    private float lifeTime = 3f; // 3초 후 자동 삭제
+    private float lifeTime = 4f; // 3초 후 자동 삭제
+    public float xRotationOffset = 90f;
     GameObject target;
     void Start()
     {
@@ -16,21 +17,30 @@ public class ArrowController : MonoBehaviour
 
     void Update()
     {
-        // target(Player)이 존재하는지 확인
         if (target != null)
         {
-            // 1. 플레이어의 실제 월드 위치를 가져옵니다.
-            Vector3 playerPosition = target.transform.position;
+            // 1. 플레이어의 가슴 쪽(위치)을 바라봄
+            Vector3 targetPos = target.transform.position + Vector3.up * 0.8f;
+            transform.LookAt(targetPos);
 
-            // 2. (수정) '방향'이 아닌 플레이어의 '위치'를 바라보게 합니다.
-            transform.LookAt(playerPosition);
-
-            // 3. (수정) 이동 로직을 if문 안으로 이동
-            // 플레이어 방향으로 이동할 방향 벡터 계산
-            transform.Translate(Vector3.forward * speed * Time.deltaTime);
-
+            // [핵심 수정] LookAt으로 Z축을 맞춘 뒤, 모델이 눕거나 서있는 만큼 강제로 돌려줍니다.
+            // 화살이 여전히 이상한 곳을 본다면 90f를 -90f, 180f 등으로 바꿔보세요.
+            transform.Rotate(xRotationOffset, 0, 0);
         }
-        // 화살은 생성될 때 이미 방향이 정해지므로, 자신의 앞(Forward)으로만 날아가면 됩니다.
+
+        // 2. 이동은 "자신의 위쪽"이 아니라 "월드 기준의 앞" 혹은 "보정된 축"으로 가야 함.
+        // 위에서 Rotate를 해버리면 축이 꼬일 수 있으므로, 이동은 LookAt 방향(플레이어 방향)으로 직접 계산하는 게 깔끔합니다.
+
+        // (가장 쉬운 방법) Translate는 로컬 축 기준이므로, 
+        // 모델을 코드로 돌리기보다 [해결 방법 1]의 프리팹 수정을 강력 추천합니다.
+        // 하지만 코드로만 하려면 아래와 같이 이동 방식을 바꿔야 합니다.
+
+        // 단순히 앞으로 전진 (Rotate 때문에 엉뚱한 곳으로 갈 수 있음 주의)
+        // transform.Translate(Vector3.up * speed * Time.deltaTime); // 만약 화살이 Y축(위)으로 길다면 up을 써야 함
+
+        // 가장 확실한 이동 코드 (회전 보정과 상관없이 무조건 플레이어 쪽으로 날아감)
+        Vector3 direction = (target.transform.position + Vector3.up * 0.8f - transform.position).normalized;
+        transform.position += direction * speed * Time.deltaTime;
     }
 
     void OnTriggerEnter(Collider other)

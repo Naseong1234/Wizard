@@ -40,11 +40,7 @@ public class MonsterAnimation : MonoBehaviour
     {
         if (isDead || player == null) return;
 
-        // 쿨타임 계산
-        if (attackTimer < attackCooldown)
-        {
-            attackTimer += Time.deltaTime;
-        }
+        attackTimer += Time.deltaTime;
 
         CheckMovement();
         HandleAttack();
@@ -61,7 +57,7 @@ public class MonsterAnimation : MonoBehaviour
     void HandleAttack()
     {
         // 쿨타임이 아직 안 됐으면 공격 불가
-        if (attackTimer < attackCooldown) return;
+        if (attackTimer <= attackCooldown) return;
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
@@ -72,14 +68,7 @@ public class MonsterAnimation : MonoBehaviour
             {
                 // 1. 애니메이션 실행
                 animator.SetTrigger("Attack1");
-
-                // 2. 화살 발사
-                // (애니메이션과 싱크를 맞추려면 사실 애니메이션 이벤트(Animation Event)를 쓰는 게 가장 좋지만,
-                // 지금은 간단히 여기서 바로 호출합니다.)
-                if (arrowGenerator != null)
-                {
-                    arrowGenerator.FireArrow();
-                }
+                arrowGenerator.FireArrow();
 
                 attackTimer = 0; // 쿨타임 초기화
             }
