@@ -150,7 +150,7 @@ public class MonsterAnimation : MonoBehaviour
     /// <summary>
     /// 몬스터가 죽었을 때 처리하는 함수
     /// </summary>
-    void Die()
+    public void Die()
     {
         isDead = true;
         animator.SetTrigger("isDie");
