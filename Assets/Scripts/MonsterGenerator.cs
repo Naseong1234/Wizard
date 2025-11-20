@@ -47,7 +47,12 @@ public class MonsterGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CreateMonster();
+        if (!PlayerController.instance.isDie)
+        {
+            CreateMonster();
+
+        }
+
     }
 
     void CreateMonster()

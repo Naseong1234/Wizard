@@ -16,16 +16,16 @@ public class ArrowController : MonoBehaviour
 
     void Update()
     {
-        if (target != null)
+        if (!PlayerController.instance.isDie)
         {
             Vector3 targetPos = target.transform.position;
             transform.LookAt(targetPos);
 
             transform.Rotate(arrowRotation, 0, 0);
-        }
 
-        Vector3 direction = (target.transform.position - transform.position).normalized;
-        transform.position += direction * speed * Time.deltaTime;
+            Vector3 direction = (target.transform.position - transform.position).normalized;
+            transform.position += direction * speed * Time.deltaTime;
+        }
     }
 
     void OnTriggerEnter(Collider other)
