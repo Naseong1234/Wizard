@@ -23,10 +23,13 @@ public class MonsterAnimation : MonoBehaviour
 
     // 컴포넌트
     private ArrowGenerator arrowGenerator; // 내 자식에 있는 제너레이터
-    private MonsterGenerator myGenerator;
     private Animator animator;
     private Vector3 lastPosition;
+    
     private bool isDead = false;
+    private float deadRange = 40.0f;
+
+
     void Start()
     {
         player = GameObject.Find("Player");// Player이라는 이름의 오브젝트를 찾은뒤
@@ -34,7 +37,6 @@ public class MonsterAnimation : MonoBehaviour
         currentHealth = maxHealth;
         lastPosition = transform.position;
 
-        // [수정 핵심] 내 자식 오브젝트들 중에서 ArrowGenerator를 찾습니다.
         // 이렇게 해야 다른 몬스터의 활이 아니라 '내 활'을 찾습니다.
         arrowGenerator = GetComponentInChildren<ArrowGenerator>();
 
@@ -52,6 +54,7 @@ public class MonsterAnimation : MonoBehaviour
 
         CheckMovement();
         HandleAttack();
+        CheckDistance();
     }
 
     void CheckMovement()
@@ -104,18 +107,11 @@ public class MonsterAnimation : MonoBehaviour
             attackTimer = 0; // 쿨타임 초기화
         }
     }
-
-    /// <summary>
-    /// 플레이어의 공격(트리거)이 몬스터에 닿았을 때 호출됩니다.
-    /// </summary>
-    /// <param name="other">몬스터와 충돌한 콜라이더</param>
     void OnTriggerEnter(Collider other)
     {
         // 몬스터가 이미 죽었으면 아무것도 하지 않음
-        if (isDead)
-        {
-            return;
-        }
+        if (isDead) return;
+        
 
         // **중요**: 플레이어의 '공격 오브젝트'에 "PlayerAttack" 태그가 있어야 합니다.
         if (other.CompareTag("PlayerAttack"))
@@ -125,10 +121,6 @@ public class MonsterAnimation : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 몬스터가 데미지를 입었을 때 처리하는 함수
-    /// </summary>
-    /// <param name="damageAmount">입은 데미지 양</param>
     public void TakeDamage(float damageAmount)
     {
         if (isDead) return; // 죽었으면 데미지 입지 않음
@@ -146,39 +138,28 @@ public class MonsterAnimation : MonoBehaviour
         }
     }
 
-
-    /// <summary>
-    /// 몬스터가 죽었을 때 처리하는 함수
-    /// </summary>
     public void Die()
     {
         isDead = true;
+        if (isExploding)
+        {
+            Destroy(gameObject, 1.5f);
+            return;
+        }
         animator.SetTrigger("isDie");
 
-        // [수정] 나를 만든 제너레이터가 존재한다면, 그 제너레이터의 숫자만 줄입니다.
-        if (myGenerator != null)
-        {
-            myGenerator.currentMonster -= 1;
-        }
+        MonsterGenerator.currentMonster -= 1;
 
         Destroy(gameObject, 1.5f);
     }
 
-    public void SetGenerator(MonsterGenerator generator)
-    {
-        myGenerator = generator;
-    }
 
+    // 여기부터
+    // 부모~자식 에 있는 파티클을 동시에 실행하는 방법을 모르겠어서 AI의 도움을 받았습니다
     public void OnExplode()
     {
-        // 1. 폭발 이펙트 생성 (파티클)
-        if (explosionEffectPrefab != null)
-        {
-            GameObject vfx = Instantiate(explosionEffectPrefab, transform.position, Quaternion.identity);
-            Destroy(vfx, 2.0f); // 2초 뒤 이펙트 삭제
-        }
-
-        // 2. 범위 데미지 처리 (반경 2m)
+        
+        // 1. 범위 데미지 처리 (반경 2m)
         Collider[] colliders = Physics.OverlapSphere(transform.position, 2.0f);
         foreach (Collider col in colliders)
         {
@@ -186,16 +167,22 @@ public class MonsterAnimation : MonoBehaviour
             {
                 // 플레이어에게 데미지 주기 (예시 코드)
                 // col.GetComponent<PlayerController>().TakeDamage(50);
-                Debug.Log("쾅! 플레이어에게 데미지를 입혔습니다.");
+                Debug.Log("쾅! 폭발에 피격!.");
             }
         }
-        if (myGenerator != null)
+    }
+    //여기까지
+
+    void CheckDistance()
+    {
+        if (isDead) return;
+
+        float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
+
+        if (distanceToPlayer >= deadRange)
         {
-            myGenerator.currentMonster -= 1;
+            MonsterGenerator.currentMonster -= 1;
+            Destroy(gameObject);
         }
-        
-        // 3. 몬스터 삭제
-        // 폭발했으니 몬스터 본체는 사라져야 합니다.
-        Destroy(gameObject);
     }
 }
