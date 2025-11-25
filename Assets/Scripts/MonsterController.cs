@@ -139,7 +139,9 @@ public class MonsterController : MonoBehaviour
     {
         if (isExploding)
         {
-            Destroy(gameObject, 1.5f);
+            MonsterGenerator.currentMonster -= 1;
+            Destroy(gameObject, 0.5f);
+
             return;
         }
         animator.SetTrigger("isDie");
@@ -150,24 +152,6 @@ public class MonsterController : MonoBehaviour
     }
 
 
-    // 여기부터
-    // 부모~자식 에 있는 파티클을 동시에 실행하는 방법을 모르겠어서 AI의 도움을 받았습니다
-    public void OnExplode()
-    {
-        
-        // 1. 범위 데미지 처리 (반경 2m)
-        Collider[] colliders = Physics.OverlapSphere(transform.position, 2.0f);
-        foreach (Collider col in colliders)
-        {
-            if (col.CompareTag("Player"))
-            {
-                // 플레이어에게 데미지 주기 (예시 코드)
-                col.GetComponent<PlayerController>().PlayerTakeDamage(30);
-                Debug.Log("쾅! 폭발에 피격!.");
-            }
-        }
-    }
-    //여기까지
 
     void CheckDistance()
     {

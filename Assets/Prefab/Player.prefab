@@ -934,7 +934,7 @@ GameObject:
   - component: {fileID: 7965048907812324061}
   m_Layer: 3
   m_Name: Staff01PolyArt
-  m_TagString: PlayerAttack
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -2160,6 +2160,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8fefdb5c2e8b18d4490d5b3526c7ec25, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHP: 200
+  currentHP: 0
+  maxLevel: 100
+  currentLevel: 0
+  maxEXP: 100
+  currentEXP: 0
   animator: {fileID: 3568842557035760155}
   cameraTransform: {fileID: 0}
   rotationSpeed: 7

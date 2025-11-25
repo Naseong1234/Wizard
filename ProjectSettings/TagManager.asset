@@ -9,6 +9,7 @@ TagManager:
   - Normal_Slime
   - Bomb_Slime
   - PlayerAttack
+  - Explosion
   layers:
   - Default
   - TransparentFX

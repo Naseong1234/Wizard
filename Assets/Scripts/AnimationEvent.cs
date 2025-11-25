@@ -29,18 +29,11 @@ public class AnimationEvent : MonoBehaviour
     {
         if (phase == "Explosion")
         {
-            if (allParticleSystems == null || allParticleSystems.Length == 0)
-            {
-                Debug.LogError("파티클 시스템을 찾을 수 없습니다.");
-                return;
-            }
-
             // 배열에 저장된 모든 Particle System을 동시에 재생합니다.
             foreach (ParticleSystem ps in allParticleSystems)
             {
                 ps.Play();
             }
-            monsterAni.OnExplode();
             monsterAni.Die();
         }
     }

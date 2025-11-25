@@ -5,33 +5,36 @@ public class SkillJoystick : Joystick
 {
     [Header("Skill Settings")]
     public Transform player;
-    public GameObject indicator;
+    public GameObject skillObj; // 이건 바닥에 보이는 파란 원 (인디케이터)
 
-    [Header("Range Settings")] // [수정됨] 사거리 설정 추가
-    public float maxSkillRange = 5f; // 스킬이 날아갈 수 있는 최대 거리
+    [Header("VFX Settings")] // [추가됨] 이펙트 설정
+    public GameObject skillEffectPrefab; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
+    public float effectDuration = 2f;    // [추가됨] 파티클이 몇 초 뒤에 사라질지
+
+    [Header("Range Settings")]
+    public float maxSkillRange = 5f;
 
     [SerializeField]
     private float fireThreshold = 0.2f;
 
     private Vector3 aimDirection;
-    private Vector3 targetPosition; // [수정됨] 최종 발사 위치 저장용
+    private Vector3 targetPosition;
 
     protected override void Start()
     {
         base.Start();
-        if (indicator != null)
-            indicator.SetActive(false);
+        if (skillObj != null)
+            skillObj.SetActive(false);
     }
 
     public override void OnPointerDown(PointerEventData eventData)
     {
         base.OnPointerDown(eventData);
 
-        if (indicator != null)
+        if (skillObj != null)
         {
-            indicator.SetActive(true);
-            indicator.transform.position = player.position;
-            // 회전은 굳이 초기화 안 해도 됩니다.
+            skillObj.SetActive(true);
+            skillObj.transform.position = player.position;
         }
     }
 
@@ -41,27 +44,22 @@ public class SkillJoystick : Joystick
 
         if (magnitude < fireThreshold)
         {
-            if (indicator.activeSelf) indicator.SetActive(false);
+            if (skillObj.activeSelf) skillObj.SetActive(false);
             return;
         }
 
-        if (!indicator.activeSelf) indicator.SetActive(true);
+        if (!skillObj.activeSelf) skillObj.SetActive(true);
 
-        // 방향 벡터 구하기 (길이 1)
         aimDirection = new Vector3(normalised.x, 0f, normalised.y);
 
-        // [수정됨] 위치 이동 로직 (핵심!)
-        // 공식: 플레이어 위치 + (방향 * 조이스틱당긴정도 * 최대사거리)
         Vector3 moveOffset = aimDirection * magnitude * maxSkillRange;
         targetPosition = player.position + moveOffset;
 
-        // 인디케이터를 계산된 위치로 옮김
-        indicator.transform.position = targetPosition;
+        skillObj.transform.position = targetPosition;
 
-        // (선택사항) 원형 스킬이라도 회전이 필요없다면 아래 2줄은 지워도 됩니다.
         if (aimDirection != Vector3.zero)
         {
-            indicator.transform.rotation = Quaternion.LookRotation(aimDirection);
+            skillObj.transform.rotation = Quaternion.LookRotation(aimDirection);
         }
     }
 
@@ -71,8 +69,8 @@ public class SkillJoystick : Joystick
 
         base.OnPointerUp(eventData);
 
-        if (indicator != null)
-            indicator.SetActive(false);
+        if (skillObj != null)
+            skillObj.SetActive(false);
 
         if (currentMagnitude >= fireThreshold)
         {
@@ -82,9 +80,23 @@ public class SkillJoystick : Joystick
 
     private void CastSpell()
     {
-        // [수정됨] 이제 aimDirection(방향) 뿐만 아니라 targetPosition(위치)도 쓸 수 있습니다.
         Debug.Log($"[Skill] 발사! 목표 위치: {targetPosition}");
 
-        // 여기에 마법 생성 코드 (targetPosition 위치에 생성)
+        // [추가됨] 파티클 생성 로직
+        if (skillEffectPrefab != null)
+        {
+            // 1. Instantiate: 프리팹을, 목표 위치에, 기본 회전값으로 생성한다
+            GameObject vfx = Instantiate(skillEffectPrefab, targetPosition, Quaternion.identity);
+
+            // 2. (선택사항) 만약 파티클 방향도 조준 방향을 따라가야 한다면 위 코드 대신 아래 줄 사용
+            // GameObject vfx = Instantiate(skillEffectPrefab, targetPosition, Quaternion.LookRotation(aimDirection));
+
+            // 3. Destroy: 생성된 파티클을 2초 뒤에 삭제한다 (안 지우면 렉 걸림)
+            Destroy(vfx, effectDuration);
+        }
+        else
+        {
+            Debug.LogWarning("스킬 이펙트 프리팹이 연결되지 않았습니다!");
+        }
     }
 }
