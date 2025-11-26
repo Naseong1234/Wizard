@@ -45,6 +45,9 @@ public class SkillJoystick : Joystick
         base.Start();
         if (skillObj != null)
             skillObj.SetActive(false);
+
+        // [추가됨] 게임 시작 시 저장된 데이터를 불러옵니다.
+        LoadSkillData();
     }
 
     public override void OnPointerDown(PointerEventData eventData)
@@ -115,16 +118,28 @@ public class SkillJoystick : Joystick
             Debug.LogWarning("스킬 이펙트 프리팹이 없거나 인덱스가 범위를 벗어났습니다!");
         }
     }
+    public void LoadSkillData()
+    {
+        // GameData에서 값을 가져와 내 변수에 넣기
+        this.elemental = GameData.selectedElement;
+        this.damageMethod = GameData.selectedDamageMethod;
+
+        Debug.Log($"[SkillJoystick] 데이터 로드 완료: {elemental} / {damageMethod}");
+
+        // 가져온 데이터를 바탕으로 스킬 인덱스 설정 (SkillChoice 호출)
+        SkillChoice();
+    }
 
     public void SkillChoice()
     {
+
         switch (gameObject.name)
         {
-            case "Skill Joystick1":
+            case "Skill Joystick 1":
                 {
                     switch (elemental)
                     {
-                        case "ice":
+                        case "Ice":
                             {
                                 currentSkillIndex = 0;
 
@@ -148,11 +163,13 @@ public class SkillJoystick : Joystick
                 }
             
             
-            case "Skill Joystick2":
+            case "Skill Joystick 2":
                 {
+                    Debug.Log("J2");
+
                     switch (elemental)
                     {
-                        case "ice":
+                        case "Ice":
                             {
                                 if (damageMethod == "continuous")
                                 {
@@ -196,12 +213,13 @@ public class SkillJoystick : Joystick
 
                     break;
                 }
-            case "Skill Joystick3":
+            case "Skill Joystick 3":
                 {
+                    Debug.Log("J3");
 
                     switch (elemental)
                     {
-                        case "ice":
+                        case "Ice":
                             {
                                 if (damageMethod == "continuous")
                                 {
