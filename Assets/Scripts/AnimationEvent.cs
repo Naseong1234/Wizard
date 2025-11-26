@@ -34,6 +34,7 @@ public class AnimationEvent : MonoBehaviour
             {
                 ps.Play();
             }
+
             monsterAni.Die();
         }
     }

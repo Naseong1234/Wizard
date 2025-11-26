@@ -261,10 +261,18 @@ MonoBehaviour:
   handle: {fileID: 2136486156}
   player: {fileID: 1248815163046034}
   skillObj: {fileID: 414943200}
-  skillEffectPrefab: {fileID: 1263070808893532551, guid: de90a67a05a61dc47ad480705b6e4861, type: 3}
+  skillEffectPrefab:
+  - {fileID: 1263070808893532551, guid: de90a67a05a61dc47ad480705b6e4861, type: 3}
+  - {fileID: 6060039224755875651, guid: 88bcd8d48c8c0664683b168e049fbc67, type: 3}
+  - {fileID: 1263070808893532551, guid: b122b352a8e4d9b47a66f8d4fcca21b8, type: 3}
+  - {fileID: 8952823245476641016, guid: 595d62827b42c0c4ca679f475363c20f, type: 3}
+  - {fileID: 8952823245476641016, guid: e98c5da699e822f4ca7b094d1c5a9759, type: 3}
+  - {fileID: 8952823245476641016, guid: 109c7351a7cf58849a1222d5fdebce4e, type: 3}
   effectDuration: 2
   maxSkillRange: 8
   fireThreshold: 0.2
+  elemental: 
+  damageMethod: 
 --- !u!1 &276630216
 GameObject:
   m_ObjectHideFlags: 0
@@ -965,10 +973,18 @@ MonoBehaviour:
   handle: {fileID: 171269127}
   player: {fileID: 1248815163046034}
   skillObj: {fileID: 414943200}
-  skillEffectPrefab: {fileID: 197390882433655530, guid: bca9ccd0b75964a419b96567e37861c9, type: 3}
+  skillEffectPrefab:
+  - {fileID: 197390882433655530, guid: 5803cee1466816d4c98183e369c64c71, type: 3}
+  - {fileID: 197390882433655530, guid: 22c01ad58537e7844a7459aab57886c3, type: 3}
+  - {fileID: 197390882433655530, guid: bca9ccd0b75964a419b96567e37861c9, type: 3}
+  - {fileID: 794265925781930077, guid: ffffa905a4061fe479ca9cedc6dee102, type: 3}
+  - {fileID: 794265925781930077, guid: b883c20ccca94b5488b146b117c565c3, type: 3}
+  - {fileID: 794265925781930077, guid: a52c2ded6118f8b4fa974746d7741d35, type: 3}
   effectDuration: 2
   maxSkillRange: 8
   fireThreshold: 0.2
+  elemental: 
+  damageMethod: 
 --- !u!1001 &1120956253
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1588,10 +1604,15 @@ MonoBehaviour:
   handle: {fileID: 1285401090}
   player: {fileID: 1248815163046034}
   skillObj: {fileID: 414943200}
-  skillEffectPrefab: {fileID: 5614462531274560693, guid: ead15e0f480c48547b83f5db266e1381, type: 3}
+  skillEffectPrefab:
+  - {fileID: 5614462531274560693, guid: ead15e0f480c48547b83f5db266e1381, type: 3}
+  - {fileID: 5614462531274560693, guid: 5cfcbb8ae7c42354783f93aa728edecc, type: 3}
+  - {fileID: 5614462531274560693, guid: b3b4c3dd1afd9f647904fd22ab23a258, type: 3}
   effectDuration: 2
   maxSkillRange: 8
   fireThreshold: 0.2
+  elemental: 
+  damageMethod: 
 --- !u!1001 &1778827525
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -8,7 +8,7 @@ public class SkillJoystick : Joystick
     public GameObject skillObj; // 이건 바닥에 보이는 파란 원 (인디케이터)
 
     [Header("VFX Settings")] // [추가됨] 이펙트 설정
-    public GameObject skillEffectPrefab; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
+    public GameObject[] skillEffectPrefab = new GameObject[6]; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
     public float effectDuration = 2f;    // [추가됨] 파티클이 몇 초 뒤에 사라질지
 
     [Header("Range Settings")]
@@ -19,6 +19,26 @@ public class SkillJoystick : Joystick
 
     private Vector3 aimDirection;
     private Vector3 targetPosition;
+
+    public static SkillJoystick instance = null;
+
+
+    // [추가됨] 현재 선택된 속성을 저장할 변수 (외부 버튼 등에서 이 값을 "Fire", "Ice" 등으로 바꿔줘야 함)
+    public string elemental;
+    public string damageMethod;
+
+    // [추가됨] 실제로 발사할 프리팹의 배열 번호 (0~5)
+    private int currentSkillIndex = 0;
+
+
+    private void Awake() // Awake는 start보다 먼저 실행됨
+    {
+        if (instance == null) // GameManager 변수인 instance는 static으로 선언했기에 하나만 존재 하느넫 하나를 null일 경우 즉 맨처음만 instance에 자신을 적용하는 즉 하나만 생성하겠다! 하는거임
+        {
+            instance = this;
+
+        }
+    }
 
     protected override void Start()
     {
@@ -80,23 +100,151 @@ public class SkillJoystick : Joystick
 
     private void CastSpell()
     {
-        Debug.Log($"[Skill] 발사! 목표 위치: {targetPosition}");
+        Debug.Log($"[Skill] 발사! 목표 위치: {targetPosition}, 사용된 인덱스: {currentSkillIndex}");
 
-        // [추가됨] 파티클 생성 로직
-        if (skillEffectPrefab != null)
+        if (skillEffectPrefab != null && skillEffectPrefab.Length > currentSkillIndex)
         {
-            // 1. Instantiate: 프리팹을, 목표 위치에, 기본 회전값으로 생성한다
-            GameObject vfx = Instantiate(skillEffectPrefab, targetPosition, Quaternion.identity);
+            // [수정됨] 무조건 [0]이 아니라, SkillChoice에서 결정된 currentSkillIndex를 사용
+            GameObject vfx = Instantiate(skillEffectPrefab[currentSkillIndex], targetPosition, Quaternion.identity);
 
-            // 2. (선택사항) 만약 파티클 방향도 조준 방향을 따라가야 한다면 위 코드 대신 아래 줄 사용
-            // GameObject vfx = Instantiate(skillEffectPrefab, targetPosition, Quaternion.LookRotation(aimDirection));
-
-            // 3. Destroy: 생성된 파티클을 2초 뒤에 삭제한다 (안 지우면 렉 걸림)
+            // 파티클 삭제
             Destroy(vfx, effectDuration);
         }
         else
         {
-            Debug.LogWarning("스킬 이펙트 프리팹이 연결되지 않았습니다!");
+            Debug.LogWarning("스킬 이펙트 프리팹이 없거나 인덱스가 범위를 벗어났습니다!");
+        }
+    }
+
+    public void SkillChoice()
+    {
+        switch (gameObject.name)
+        {
+            case "Skill Joystick1":
+                {
+                    switch (elemental)
+                    {
+                        case "ice":
+                            {
+                                currentSkillIndex = 0;
+
+                                break;
+                            }
+                        case "Fire":
+                            {
+                                currentSkillIndex = 1;
+
+                                break;
+                            }
+                        case "Electro":
+                            {
+                                currentSkillIndex = 2;
+
+                                break;
+                            }
+                    }
+
+                    break;
+                }
+            
+            
+            case "Skill Joystick2":
+                {
+                    switch (elemental)
+                    {
+                        case "ice":
+                            {
+                                if (damageMethod == "continuous")
+                                {
+                                    currentSkillIndex = 0;
+                                }
+                                else if (damageMethod == "Immediate")
+                                {
+                                    currentSkillIndex = 3;
+                                }
+
+                                break;
+                            }
+                        case "Fire":
+                            {
+                                if (damageMethod == "continuous")
+                                {
+                                    currentSkillIndex = 1;
+                                }
+                                else if (damageMethod == "Immediate")
+                                {
+                                    currentSkillIndex = 4;
+                                }
+
+                                break;
+                            }
+                        case "Electro":
+                            {
+                                if (damageMethod == "continuous")
+                                {
+                                    currentSkillIndex = 2;
+                                }
+                                else if (damageMethod == "Immediate")
+                                {
+                                    currentSkillIndex = 5;
+                                }
+
+                                break;
+                            }
+
+                    }
+
+                    break;
+                }
+            case "Skill Joystick3":
+                {
+
+                    switch (elemental)
+                    {
+                        case "ice":
+                            {
+                                if (damageMethod == "continuous")
+                                {
+                                    currentSkillIndex = 0;
+                                }
+                                else if (damageMethod == "Immediate")
+                                {
+                                    currentSkillIndex = 3;
+                                }
+
+                                break;
+                            }
+                        case "Fire":
+                            {
+                                if (damageMethod == "continuous")
+                                {
+                                    currentSkillIndex = 1;
+                                }
+                                else if (damageMethod == "Immediate")
+                                {
+                                    currentSkillIndex = 4;
+                                }
+
+                                break;
+                            }
+                        case "Electro":
+                            {
+                                if (damageMethod == "continuous")
+                                {
+                                    currentSkillIndex = 2;
+                                }
+                                else if (damageMethod == "Immediate")
+                                {
+                                    currentSkillIndex = 5;
+                                }
+
+                                break;
+                            }
+
+                    }
+                    break;
+                }
+
         }
     }
 }
