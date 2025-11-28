@@ -121,8 +121,8 @@ public class SkillJoystick : Joystick
     public void LoadSkillData()
     {
         // GameData에서 값을 가져와 내 변수에 넣기
-        this.elemental = GameData.selectedElement;
-        this.damageMethod = GameData.selectedDamageMethod;
+        this.elemental = GameManager.selectedElement;
+        this.damageMethod = GameManager.selectedDamageMethod;
 
         Debug.Log($"[SkillJoystick] 데이터 로드 완료: {elemental} / {damageMethod}");
 

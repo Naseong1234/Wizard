@@ -256,6 +256,7 @@ MonoBehaviour:
   attackCooldown: 2.5
   maxHP: 100
   currentHP: 0
+  recoveryObj: {fileID: 6928379448455517354, guid: de8857a8ed19a5a449e45eeef10736e8, type: 3}
   explosionEffectPrefab: {fileID: 358637981425055526, guid: 8eb503696b886e04faff8fc0f480d473, type: 3}
 --- !u!54 &898335473093752128
 Rigidbody:

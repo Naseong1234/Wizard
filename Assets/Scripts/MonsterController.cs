@@ -15,6 +15,11 @@ public class MonsterController : MonoBehaviour
     public float maxHP = 100f;
     public float currentHP;
 
+    [Header("체력 회복 오브젝트")]
+    public GameObject recoveryObj;
+    float recovery = 0f;
+
+
     [Header("이펙트 설정")]
     public GameObject explosionEffectPrefab; // 인스펙터에 폭발 파티클 프리팹을 꼭 넣어주세요!
 
@@ -38,9 +43,10 @@ public class MonsterController : MonoBehaviour
 
         // 이렇게 해야 다른 몬스터의 활이 아니라 '내 활'을 찾습니다.
         arrowGenerator = GetComponentInChildren<ArrowGenerator>();
+        recovery = Random.Range(1, 101);
 
 
-        
+
     }
 
     void Update()
@@ -139,14 +145,25 @@ public class MonsterController : MonoBehaviour
     {
         if (isExploding)
         {
-            MonsterGenerator.currentMonster -= 1;
+            GameManager.currentMonster -= 1;
             Destroy(gameObject, 0.5f);
 
             return;
         }
         animator.SetTrigger("isDie");
 
-        MonsterGenerator.currentMonster -= 1;
+        GameManager.currentMonster -= 1;
+        GameManager.instance.EXPManage();
+
+
+        if(recovery <= 2)
+        {
+            Instantiate(recoveryObj,transform.position + Vector3.up * 1, transform.rotation);
+        }
+        recovery = Random.Range(1, 101);
+
+
+
 
         Destroy(gameObject, 1.5f);
     }
@@ -160,7 +177,7 @@ public class MonsterController : MonoBehaviour
 
         if (distanceToPlayer >= deadRange)
         {
-            MonsterGenerator.currentMonster -= 1;
+            GameManager.currentMonster -= 1;
             Destroy(gameObject);
         }
     }

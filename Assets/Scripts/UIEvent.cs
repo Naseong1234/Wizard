@@ -3,18 +3,19 @@ using UnityEngine.SceneManagement;
 
 public class UIEvent : MonoBehaviour
 {
-    public GameObject Immediate;     // 게임오버시 활성화할 텍스트 게임 오브젝트 
-    public GameObject continuous;     // 게임오버시 활성화할 텍스트 게임 오브젝트 
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
         
+        
+
     }
 
 
@@ -23,13 +24,13 @@ public class UIEvent : MonoBehaviour
         switch (gameObject.name)
         {
             case "Ice Choice":
-                GameData.selectedElement = "Ice"; // 메모장에 기록
+                GameManager.selectedElement = "Ice"; // 메모장에 기록
                 break;
             case "Fire Choice":
-                GameData.selectedElement = "Fire";
+                GameManager.selectedElement = "Fire";
                 break;
             case "Electro Choice":
-                GameData.selectedElement = "Electro";
+                GameManager.selectedElement = "Electro";
                 break;
         }
     }
@@ -40,10 +41,10 @@ public class UIEvent : MonoBehaviour
         {
             case "Immediate damage":
                 // 1. 먼저 공용 메모장(GameData)에 값을 저장합니다.
-                GameData.selectedDamageMethod = "Immediate";
+                GameManager.selectedDamageMethod = "Immediate";
                 break;
             case "continuous damage":
-                GameData.selectedDamageMethod = "continuous";
+                GameManager.selectedDamageMethod = "continuous";
                 break;
         }
 
@@ -60,10 +61,17 @@ public class UIEvent : MonoBehaviour
         }
 
         // 4. UI 끄기
-        if (Immediate != null) Immediate.SetActive(false);
-        if (continuous != null) continuous.SetActive(false);
+        GameManager.instance.Immediate.SetActive(false);
+        GameManager.instance.continuous.SetActive(false);
+
+        Time.timeScale = 1;
+
     }
 
+    public void ChangeScene(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
     public void startGame()
     {
         SceneManager.LoadScene("GameScene");

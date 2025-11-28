@@ -1068,12 +1068,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3102ba8cd62c68a48a33b64293b0d3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 8824809470317228783, guid: f9c6ddec9f79f4942a585a1e5a4ee394, type: 3}
+  playerTransform: {fileID: 0}
   closeAttackRange: 1
   longAttackRange: 2
   attackCooldown: 2.5
-  maxHealth: 100
-  currentHealth: 0
+  maxHP: 100
+  currentHP: 0
+  recoveryObj: {fileID: 6928379448455517354, guid: de8857a8ed19a5a449e45eeef10736e8, type: 3}
+  explosionEffectPrefab: {fileID: 0}
 --- !u!54 &-4421701983614465102
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -5,7 +5,7 @@ public class AnimationEvent : MonoBehaviour
 {
     // 여기부터
     // 부모~자식 에 있는 파티클을 동시에 실행하는 방법을 모르겠어서 AI의 도움을 받았습니다
-    MonsterController monsterAni;
+    MonsterController monster;
     // 단일 ParticleSystem 대신 모든 파티클 시스템을 담을 배열로 변경
     private ParticleSystem[] allParticleSystems;
 
@@ -14,7 +14,7 @@ public class AnimationEvent : MonoBehaviour
         // 이 스크립트가 부착된 오브젝트와 그 자식들(Smoke, ShockWave, Flash)의 
         // 모든 ParticleSystem 컴포넌트를 한 번에 가져옵니다.
         allParticleSystems = GetComponentsInChildren<ParticleSystem>();
-        monsterAni = GetComponent<MonsterController>();
+        monster = GetComponent<MonsterController>();
 
         // 안전을 위해 시작 시 모든 파티클을 멈춥니다.
         // (만약 파티클이 Play On Awake 설정되어 있다면 여기서 멈춰야 합니다.)
@@ -35,7 +35,7 @@ public class AnimationEvent : MonoBehaviour
                 ps.Play();
             }
 
-            monsterAni.Die();
+            monster.Die();
         }
     }
 

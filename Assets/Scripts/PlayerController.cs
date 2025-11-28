@@ -4,14 +4,8 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-    public float maxHP = 200f;
-    public float currentHP;
-
-    public float maxLevel = 100f;
-    public float currentLevel = 0;
-
-    public float maxEXP = 100f;
-    public float currentEXP = 0;
+   
+    
 
     public static PlayerController instance;
 
@@ -53,7 +47,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        currentHP = maxHP;
+        GameManager.playerHP = GameManager.maxHP;
     }
 
     void Update()
@@ -147,10 +141,16 @@ public class PlayerController : MonoBehaviour
         // 폭발도 무적일 땐 안 맞음
         if (isInvincible) return;
 
-        if (other.CompareTag("Explosion"))
+        switch (other.gameObject.tag)
         {
-            PlayerTakeDamage(30);
-            Debug.Log("쾅! 폭발에 피격!.");
+            case "Explosion":
+                PlayerTakeDamage(30);
+                Debug.Log("쾅! 폭발에 피격!.");
+                break;
+            case "Recovery":
+                GameManager.playerHP += 20;
+                Destroy(other.gameObject);
+                break;
         }
     }
 
@@ -158,10 +158,10 @@ public class PlayerController : MonoBehaviour
     public void PlayerTakeDamage(float damage)
     {
         // 사망했거나 무적이면 데미지 무시
-        if (currentHP <= 0 || isInvincible) return;
+        if (GameManager.playerHP <= 0 || isInvincible) return;
 
-        currentHP -= damage;
-        Debug.Log($"HP 감소! 현재 HP: {currentHP}");
+        GameManager.playerHP -= damage;
+        Debug.Log($"HP 감소! 현재 HP: {GameManager.playerHP}");
 
         // 맞았으니까 무적 모드 실행 (코루틴 시작)
         StartCoroutine(InvincibilityRoutine());
@@ -186,9 +186,9 @@ public class PlayerController : MonoBehaviour
 
     void PlayerDie()
     {
-        if (currentHP <= 0 && !isDie) // !isDie 체크 추가 (중복 사망 방지)
+        if (GameManager.playerHP <= 0 && !isDie) // !isDie 체크 추가 (중복 사망 방지)
         {
-            currentHP = 0;
+            GameManager.playerHP = 0;
             Debug.Log("플레이어 사망!");
             isDie = true;
             gameObject.SetActive(false);

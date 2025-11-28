@@ -10,6 +10,7 @@ TagManager:
   - Bomb_Slime
   - PlayerAttack
   - Explosion
+  - Recovery
   layers:
   - Default
   - TransparentFX
