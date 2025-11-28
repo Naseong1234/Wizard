@@ -33,6 +33,9 @@ public class UIEvent : MonoBehaviour
                 GameManager.selectedElement = "Electro";
                 break;
         }
+
+
+
     }
 
     public void damageMethodChoice()
@@ -70,23 +73,27 @@ public class UIEvent : MonoBehaviour
 
     public void ChangeScene(string sceneName)
     {
+        Time.timeScale = 1;
+
         SceneManager.LoadScene(sceneName);
     }
-    public void startGame()
+
+    public void OnPause()
     {
-        SceneManager.LoadScene("GameScene");
+        GameManager.instance.PlayButten.SetActive(true);
+        GameManager.instance.HomeButten.SetActive(true);
+        Time.timeScale = 0;
 
     }
-    public void startChoice()
-    {
-        SceneManager.LoadScene("ChoiceScene");
 
-    }
-    public void startLogin()
+    public void OnPlay()
     {
-        SceneManager.LoadScene("LoginScene");
+        GameManager.instance.PlayButten.SetActive(false);
+        GameManager.instance.HomeButten.SetActive(false);
 
+        Time.timeScale = 1;
     }
+    
 
 
 }

@@ -1,8 +1,19 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI; // [필수] 이미지 변경을 위해 필요
+
 
 public class SkillJoystick : Joystick
 {
+    [Header("타겟 UI 이미지")]
+    public Image skillButtonImage; // 바뀌어야 할 스킬 버튼의 Image 컴포넌트
+
+    [Header("레벨별 아이콘 설정")]
+    public Sprite[] imagePrefab; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
+
+
+
+
     [Header("Skill Settings")]
     public Transform player;
     public GameObject skillObj; // 이건 바닥에 보이는 파란 원 (인디케이터)
@@ -28,7 +39,8 @@ public class SkillJoystick : Joystick
     public string damageMethod;
 
     // [추가됨] 실제로 발사할 프리팹의 배열 번호 (0~5)
-    private int currentSkillIndex = 0;
+    private int skillIndex = 1;
+    private bool firstChoice = false;
 
 
     private void Awake() // Awake는 start보다 먼저 실행됨
@@ -36,6 +48,7 @@ public class SkillJoystick : Joystick
         if (instance == null) // GameManager 변수인 instance는 static으로 선언했기에 하나만 존재 하느넫 하나를 null일 경우 즉 맨처음만 instance에 자신을 적용하는 즉 하나만 생성하겠다! 하는거임
         {
             instance = this;
+
 
         }
     }
@@ -50,8 +63,25 @@ public class SkillJoystick : Joystick
         LoadSkillData();
     }
 
+    // [핵심 1] 현재 잠금 상태인지 확인하는 함수 (코드를 깔끔하게 하기 위해 분리)
+    public bool IsLocked()
+    {
+        if (skillButtonImage != null && imagePrefab != null && imagePrefab.Length > 0)
+        {
+            // 현재 이미지가 0번(자물쇠) 이미지라면 true 반환
+            if (skillButtonImage.sprite == imagePrefab[0])
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // [핵심 2] 터치 시작(클릭) 시 잠금이면 무시
     public override void OnPointerDown(PointerEventData eventData)
     {
+        if (IsLocked()) return; // 잠겨있으면 여기서 함수 종료 (base.OnPointerDown 실행 안됨)
+
         base.OnPointerDown(eventData);
 
         if (skillObj != null)
@@ -63,6 +93,8 @@ public class SkillJoystick : Joystick
 
     protected override void HandleInput(float magnitude, Vector2 normalised, Vector2 radius, Camera cam)
     {
+        if (IsLocked()) return;
+
         base.HandleInput(magnitude, normalised, radius, cam);
 
         if (magnitude < fireThreshold)
@@ -88,6 +120,8 @@ public class SkillJoystick : Joystick
 
     public override void OnPointerUp(PointerEventData eventData)
     {
+        if (IsLocked()) return;
+
         float currentMagnitude = Direction.magnitude;
 
         base.OnPointerUp(eventData);
@@ -103,12 +137,12 @@ public class SkillJoystick : Joystick
 
     private void CastSpell()
     {
-        Debug.Log($"[Skill] 발사! 목표 위치: {targetPosition}, 사용된 인덱스: {currentSkillIndex}");
+        Debug.Log($"[Skill] 발사! 목표 위치: {targetPosition}, 사용된 인덱스: {skillIndex}");
 
-        if (skillEffectPrefab != null && skillEffectPrefab.Length > currentSkillIndex)
+        if (skillEffectPrefab != null && skillEffectPrefab.Length > skillIndex)
         {
-            // [수정됨] 무조건 [0]이 아니라, SkillChoice에서 결정된 currentSkillIndex를 사용
-            GameObject vfx = Instantiate(skillEffectPrefab[currentSkillIndex], targetPosition, Quaternion.identity);
+            // [수정됨] 무조건 [0]이 아니라, SkillChoice에서 결정된 skillIndex를 사용
+            GameObject vfx = Instantiate(skillEffectPrefab[skillIndex], targetPosition, Quaternion.identity);
 
             // 파티클 삭제
             Destroy(vfx, effectDuration);
@@ -132,6 +166,11 @@ public class SkillJoystick : Joystick
 
     public void SkillChoice()
     {
+        if(GameManager.playerLevel == 1 && !firstChoice)
+        {
+            firstChoice = true;
+            skillButtonImage.sprite = imagePrefab[0];
+        }
 
         switch (gameObject.name)
         {
@@ -141,22 +180,24 @@ public class SkillJoystick : Joystick
                     {
                         case "Ice":
                             {
-                                currentSkillIndex = 0;
-
+                                skillIndex = 1;
                                 break;
                             }
                         case "Fire":
                             {
-                                currentSkillIndex = 1;
-
+                                skillIndex = 2;
                                 break;
                             }
                         case "Electro":
                             {
-                                currentSkillIndex = 2;
-
+                                skillIndex = 3;
                                 break;
                             }
+                    }
+
+                    if (GameManager.playerLevel == 1)
+                    {
+                        skillButtonImage.sprite = imagePrefab[skillIndex];
                     }
 
                     break;
@@ -173,11 +214,11 @@ public class SkillJoystick : Joystick
                             {
                                 if (damageMethod == "continuous")
                                 {
-                                    currentSkillIndex = 0;
+                                    skillIndex = 1;
                                 }
                                 else if (damageMethod == "Immediate")
                                 {
-                                    currentSkillIndex = 3;
+                                    skillIndex = 4;
                                 }
 
                                 break;
@@ -186,11 +227,11 @@ public class SkillJoystick : Joystick
                             {
                                 if (damageMethod == "continuous")
                                 {
-                                    currentSkillIndex = 1;
+                                    skillIndex = 2;
                                 }
                                 else if (damageMethod == "Immediate")
                                 {
-                                    currentSkillIndex = 4;
+                                    skillIndex = 5;
                                 }
 
                                 break;
@@ -199,16 +240,20 @@ public class SkillJoystick : Joystick
                             {
                                 if (damageMethod == "continuous")
                                 {
-                                    currentSkillIndex = 2;
+                                    skillIndex = 3;
                                 }
                                 else if (damageMethod == "Immediate")
                                 {
-                                    currentSkillIndex = 5;
+                                    skillIndex = 6;
                                 }
 
                                 break;
                             }
+                    }
 
+                    if (GameManager.playerLevel == 5)
+                    {
+                        skillButtonImage.sprite = imagePrefab[skillIndex];
                     }
 
                     break;
@@ -223,11 +268,11 @@ public class SkillJoystick : Joystick
                             {
                                 if (damageMethod == "continuous")
                                 {
-                                    currentSkillIndex = 0;
+                                    skillIndex = 1;
                                 }
                                 else if (damageMethod == "Immediate")
                                 {
-                                    currentSkillIndex = 3;
+                                    skillIndex = 4;
                                 }
 
                                 break;
@@ -236,11 +281,11 @@ public class SkillJoystick : Joystick
                             {
                                 if (damageMethod == "continuous")
                                 {
-                                    currentSkillIndex = 1;
+                                    skillIndex = 2;
                                 }
                                 else if (damageMethod == "Immediate")
                                 {
-                                    currentSkillIndex = 4;
+                                    skillIndex = 5;
                                 }
 
                                 break;
@@ -249,16 +294,21 @@ public class SkillJoystick : Joystick
                             {
                                 if (damageMethod == "continuous")
                                 {
-                                    currentSkillIndex = 2;
+                                    skillIndex = 3;
                                 }
                                 else if (damageMethod == "Immediate")
                                 {
-                                    currentSkillIndex = 5;
+                                    skillIndex = 6;
                                 }
 
                                 break;
                             }
 
+                    }
+
+                    if (GameManager.playerLevel == 10)
+                    {
+                        skillButtonImage.sprite = imagePrefab[skillIndex];
                     }
                     break;
                 }

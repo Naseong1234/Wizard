@@ -49,12 +49,14 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
         if (canvas == null)
             Debug.LogError("The Joystick is not placed inside a canvas");
 
+        /*
         Vector2 center = new Vector2(0.5f, 0.5f);
         background.pivot = center;
         handle.anchorMin = center;
         handle.anchorMax = center;
         handle.pivot = center;
         handle.anchoredPosition = Vector2.zero;
+        */
     }
 
     public virtual void OnPointerDown(PointerEventData eventData)
@@ -64,6 +66,7 @@ public class Joystick : MonoBehaviour, IPointerDownHandler, IDragHandler, IPoint
 
     public void OnDrag(PointerEventData eventData)
     {
+        SkillJoystick.instance.IsLocked();
         cam = null;
         if (canvas.renderMode == RenderMode.ScreenSpaceCamera)
             cam = canvas.worldCamera;

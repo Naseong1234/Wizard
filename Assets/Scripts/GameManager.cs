@@ -18,25 +18,34 @@ public class GameManager : MonoBehaviour
     public static float maxHP = 200f;
     static float currentHP; 
 
-    static float maxLevel = 100f;
+    float maxLevel = 15f;
     static float currentLevel = 1;
 
-    static float maxEXP = 10;
-    public static float currentEXP = 0;
+    float maxEXP = 10;
+    float currentEXP = 0;
 
     // UI 오브젝트 모음
     [Header("UI Objects")]
     public TextMeshProUGUI LevelText;
     public TextMeshProUGUI WaveText;
 
-    public GameObject Immediate;     // 게임오버시 활성화할 텍스트 게임 오브젝트 
-    public GameObject continuous;     // 게임오버시 활성화할 텍스트 게임 오브젝트 
+    public GameObject Immediate;     
+    public GameObject continuous;    
+    public GameObject PlayButten;
+    public GameObject HomeButten;
+
+    public GameObject handle1;
+    public GameObject handle2;
+    public GameObject handle3;
+
 
     // [변경] GameObject 대신 Slider 컴포넌트를 직접 받아옵니다.
     public Slider hpSlider;
     public Slider expSlider;
 
-    bool isCardEvent = false;
+    bool Level1Event = false;
+    bool Level5Event = false;
+    bool Level10Event = false;
 
 
 
@@ -69,6 +78,10 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         currentHP = maxHP;
+        currentLevel = 1;
+
+
+
 
         // 시작 시 슬라이더 초기화 (선택 사항)
         //UpdateUIBars();
@@ -97,12 +110,49 @@ public class GameManager : MonoBehaviour
 
     void AlwaysUIEvent()
     {
-        if (playerLevel == 5 && !isCardEvent)
+
+
+        if (playerLevel == 1 && !Level1Event)
+        {
+            handle1.SetActive(true);
+            Level1Event = true;
+            SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
+
+            // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
+            foreach (SkillJoystick joystick in allJoysticks)
+            {
+                // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
+                joystick.SkillChoice();
+            }
+        }
+        if (playerLevel == 5 && !Level5Event)
         {
             Time.timeScale = 0;
             Immediate.SetActive(true);
             continuous.SetActive(true);
-            isCardEvent = true;
+            handle2.SetActive(true);
+            Level5Event = true;
+            SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
+
+            // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
+            foreach (SkillJoystick joystick in allJoysticks)
+            {
+                // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
+                joystick.SkillChoice();
+            }
+        }
+        if (playerLevel == 10 && !Level10Event)
+        {
+            handle3.SetActive(true);
+            Level10Event = true;
+            SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
+
+            // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
+            foreach (SkillJoystick joystick in allJoysticks)
+            {
+                // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
+                joystick.SkillChoice();
+            }
         }
 
         LevelText.text = "Level " + currentLevel;
