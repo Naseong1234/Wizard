@@ -1,22 +1,38 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI; // [필수] 이미지 변경을 위해 필요
 
 
-public class SkillJoystick : Joystick
+public class SkillManager : Joystick
 {
+    [Header("UI Handle Object")]
+    // [중요] 여기에 유니티 인스펙터에서 Handle 오브젝트를 드래그해서 넣으세요!
+    public GameObject handleObject;
+
+    [Header("스킬 쿨타임 텍스트")]
+    public TextMeshProUGUI skillCollText;
+
+
     [Header("타겟 UI 이미지")]
     public Image skillButtonImage; // 바뀌어야 할 스킬 버튼의 Image 컴포넌트
 
     [Header("레벨별 아이콘 설정")]
     public Sprite[] imagePrefab; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
 
-    
+    float coolTime = 0f;
+    float skillTime = 1f;
 
+    public float skill1CoolTime = 1f;
+    public float skill2CoolTime = 2f;
+    float skill3CoolTime = 2f;
+    public bool isSkillReady = true;
 
     [Header("Skill Settings")]
     public Transform player;
     public GameObject skillObj; // 이건 바닥에 보이는 파란 원 (인디케이터)
+
+
 
     [Header("VFX Settings")] // [추가됨] 이펙트 설정
     public GameObject[] skillEffectPrefab = new GameObject[6]; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
@@ -31,7 +47,7 @@ public class SkillJoystick : Joystick
     private Vector3 aimDirection;
     private Vector3 targetPosition;
 
-    public static SkillJoystick instance = null;
+    public static SkillManager instance = null;
 
 
     // [추가됨] 현재 선택된 속성을 저장할 변수 (외부 버튼 등에서 이 값을 "Fire", "Ice" 등으로 바꿔줘야 함)
@@ -55,20 +71,83 @@ public class SkillJoystick : Joystick
 
     protected override void Start()
     {
+        // [수정 2] 시작 시 쿨타임 시간을 0으로 초기화하여 바로 사용 가능하게 만듦
+        skillTime = 0f;
+        isSkillReady = true; // 확실하게 true로 설정
         base.Start();
-        if (skillObj != null)
-            skillObj.SetActive(false);
+        if (skillObj != null) { skillObj.SetActive(false); }
 
-        // [추가됨] 게임 시작 시 저장된 데이터를 불러옵니다.
         LoadSkillData();
+
+        // [핵심] 게임 시작 시 한번 강제로 체크하여 자물쇠인 녀석들의 핸들을 끕니다.
+        CheckCooldown();
     }
 
-    // [핵심 1] 현재 잠금 상태인지 확인하는 함수 (코드를 깔끔하게 하기 위해 분리)
-    public bool IsLocked()
+    private void Update()
+    {
+        CheckCooldown();
+    }
+
+    private void CheckCooldown()
+    {
+        // 1. [최우선 순위] 현재 이미지가 자물쇠(Lock)라면 핸들을 끄고 로직 중단
+        if (IsLockIcon())
+        {
+            if (handleObject != null && handleObject.activeSelf)
+            {
+                handleObject.SetActive(false);
+            }
+            // 자물쇠 상태에서는 쿨타임 계산도 하지 않고 리턴
+            return;
+        }
+
+        // 2. 쿨타임 시간 설정
+        switch (gameObject.name)
+        {
+            case "Skill Joystick 1": coolTime = skill1CoolTime; break;
+            case "Skill Joystick 2": coolTime = skill2CoolTime; break;
+            case "Skill Joystick 3": coolTime = skill3CoolTime; break;
+        }
+
+        // 3. 스킬 쿨타임 중일 때 (준비 안됨)
+        if (isSkillReady == false)
+        {
+            skillTime -= Time.deltaTime;
+
+            // 쿨타임 중에는 핸들 숨김
+            if (handleObject != null && handleObject.activeSelf == true)
+            {
+                handleObject.SetActive(false);
+            }
+
+            if (skillCollText != null)
+                skillCollText.text = skillTime.ToString("F1");
+
+        }
+
+        // 4. 쿨타임 종료 (스킬 사용 가능)
+        if (skillTime <= 0)
+        {
+            skillTime = 0;
+            isSkillReady = true;
+
+            // 자물쇠도 아니고, 쿨타임도 끝났으니 핸들 보이기
+            if (handleObject != null && handleObject.activeSelf == false)
+            {
+                handleObject.SetActive(true);
+            }
+
+            if (skillCollText != null) skillCollText.text = "";
+            if (skillButtonImage != null) skillButtonImage.fillAmount = 1;
+        }
+    }
+
+    // [핵심 로직] 현재 이미지가 자물쇠인지 판별하는 함수
+    public bool IsLockIcon()
     {
         if (skillButtonImage != null && imagePrefab != null && imagePrefab.Length > 0)
         {
-            // 현재 이미지가 0번(자물쇠) 이미지라면 true 반환
+            // 0번 이미지가 자물쇠라고 가정
             if (skillButtonImage.sprite == imagePrefab[0])
             {
                 return true;
@@ -77,10 +156,22 @@ public class SkillJoystick : Joystick
         return false;
     }
 
+    // 터치 방지용 (자물쇠이거나 쿨타임 중이면 터치 안됨)
+    public bool IsLocked()
+    {
+        if (IsLockIcon() || !isSkillReady)
+        {
+            return true;
+        }
+        return false;
+    }
+
     // [핵심 2] 터치 시작(클릭) 시 잠금이면 무시
     public override void OnPointerDown(PointerEventData eventData)
     {
-        if (IsLocked()) return; // 잠겨있으면 여기서 함수 종료 (base.OnPointerDown 실행 안됨)
+        if (IsLocked()) return;
+
+        if (isSkillReady == false) return;
 
         base.OnPointerDown(eventData);
 
@@ -141,11 +232,22 @@ public class SkillJoystick : Joystick
 
         if (skillEffectPrefab != null && skillEffectPrefab.Length > skillIndex)
         {
-            // [수정됨] 무조건 [0]이 아니라, SkillChoice에서 결정된 skillIndex를 사용
             GameObject vfx = Instantiate(skillEffectPrefab[skillIndex], targetPosition, Quaternion.identity);
 
-            // 파티클 삭제
+            if (damageMethod == "continuous")
+            {
+                effectDuration = 6;
+            }
+            else
+            {
+                effectDuration = 2;
+            }
             Destroy(vfx, effectDuration);
+
+            // [핵심] 스킬을 발사한 이 순간에만 시간을 쿨타임으로 설정하고, 상태를 false로 변경
+            isSkillReady = false;
+            handleObject.SetActive(false);
+            skillTime = coolTime; // 여기서 3초로 설정!
         }
         else
         {
@@ -158,7 +260,7 @@ public class SkillJoystick : Joystick
         this.elemental = GameManager.selectedElement;
         this.damageMethod = GameManager.selectedDamageMethod;
 
-        Debug.Log($"[SkillJoystick] 데이터 로드 완료: {elemental} / {damageMethod}");
+        Debug.Log($"[SkillManager] 데이터 로드 완료: {elemental} / {damageMethod}");
 
         // 가져온 데이터를 바탕으로 스킬 인덱스 설정 (SkillChoice 호출)
         SkillChoice();
@@ -166,44 +268,35 @@ public class SkillJoystick : Joystick
 
     public void SkillChoice()
     {
-        if(GameManager.playerLevel == 1 && !firstChoice)
+        // 1레벨일 때 자물쇠 설정 로직
+        if (GameManager.playerLevel == 1 && !firstChoice)
         {
             firstChoice = true;
+
             skillButtonImage.sprite = imagePrefab[0];
+
         }
 
         switch (gameObject.name)
         {
             case "Skill Joystick 1":
                 {
+                    // 1번 조이스틱은 레벨 1부터 스킬 아이콘을 가짐
                     switch (elemental)
                     {
-                        case "Ice":
-                            {
-                                skillIndex = 1;
-                                break;
-                            }
-                        case "Fire":
-                            {
-                                skillIndex = 2;
-                                break;
-                            }
-                        case "Electro":
-                            {
-                                skillIndex = 3;
-                                break;
-                            }
+                        case "Ice": skillIndex = 1; break;
+                        case "Fire": skillIndex = 2; break;
+                        case "Electro": skillIndex = 3; break;
                     }
 
-                    if (GameManager.playerLevel == 1)
+                    if (GameManager.playerLevel >= 1) // 1레벨 이상이면 무조건 아이콘 변경
                     {
                         skillButtonImage.sprite = imagePrefab[skillIndex];
                     }
-
                     break;
                 }
-            
-            
+
+
             case "Skill Joystick 2":
                 {
                     Debug.Log("J2");

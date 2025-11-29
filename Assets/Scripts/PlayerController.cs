@@ -4,8 +4,10 @@ using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
-   
-    
+    // [추가됨 1] 순간이동 이펙트 프리팹을 담을 변수
+    [Header("VFX")]
+    public GameObject teleportEffectPrefab;
+
 
     public static PlayerController instance;
 
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
+        Time.timeScale = 1;
         rb = GetComponent<Rigidbody>();
         GameManager.playerHP = GameManager.maxHP;
     }
@@ -100,6 +103,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void OnTeleport()
+    {
+        if (TeleportTimer >= TeleportCool && isGrounded)
+        {
+            TeleportTimer = 0f;
+            transform.position += transform.forward * 5;
+
+            // 3. [추가됨] 이펙트 생성 (이동한 위치에 생성)
+            if (teleportEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(teleportEffectPrefab, transform.position, transform.rotation);
+
+                Destroy(effect, 2f);
+            }
+        }
+    }
+
     void HandleActions()
     {
         if (Input.GetMouseButtonDown(0) && attackTimer >= attackCool)
@@ -109,11 +129,19 @@ public class PlayerController : MonoBehaviour
             Debug.Log("공격!");
         }
 
+        // [수정된 부분] 순간이동 로직
         if (Input.GetKeyDown(KeyCode.LeftShift) && TeleportTimer >= TeleportCool && isGrounded)
         {
             TeleportTimer = 0f;
             transform.position += transform.forward * 5;
-            animator.SetTrigger("Roll");
+
+            // 3. [추가됨] 이펙트 생성 (이동한 위치에 생성)
+            if (teleportEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(teleportEffectPrefab, transform.position, transform.rotation);
+
+                Destroy(effect, 2f);
+            }
         }
     }
 

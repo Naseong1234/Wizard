@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     // UI 변수 모음
     public static float maxHP = 200f;
-    static float currentHP; 
+    static float currentHP;
 
     float maxLevel = 15f;
     static float currentLevel = 1;
@@ -29,8 +29,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI LevelText;
     public TextMeshProUGUI WaveText;
 
-    public GameObject gameoverImage;     
-    public GameObject immediate;     
+    public GameObject gameoverImage;
+    public GameObject immediate;
     public GameObject continuous;
     public GameObject homeUI;
     public GameObject playUI;
@@ -42,11 +42,8 @@ public class GameManager : MonoBehaviour
     public GameObject handle2;
     public GameObject handle3;
 
-
-    // [변경] GameObject 대신 Slider 컴포넌트를 직접 받아옵니다.
-    public Slider hpSlider;
-    public Slider expSlider;
-
+    public Image hpBarImage;
+    public Image expBarImage;
     bool Level1Event = false;
     bool Level5Event = false;
     bool Level10Event = false;
@@ -56,10 +53,10 @@ public class GameManager : MonoBehaviour
     public static float playerHP
     {
         get { return currentHP; }
-        set 
-        { 
-            currentHP = value; 
-            if(currentHP > maxHP)
+        set
+        {
+            currentHP = value;
+            if (currentHP > maxHP)
             {
                 currentHP = maxHP;
             }
@@ -116,72 +113,78 @@ public class GameManager : MonoBehaviour
 
     void AlwaysUIEvent()
     {
+        // 최적화를 위해 모든 이벤트가 끝났으면 함수 실행 안 함 (선택 사항)
+        if (Level1Event && Level5Event && Level10Event) return;
 
+        SkillManager[] allJoysticks = FindObjectsByType<SkillManager>(FindObjectsSortMode.None);
 
-        if (playerLevel == 1 && !Level1Event)
+        // -------------------------------------------------------
+        // [Level 1 이벤트]
+        if (playerLevel >= 1 && !Level1Event)
         {
             handle1.SetActive(true);
-            Level1Event = true;
-            SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
 
-            // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
-            foreach (SkillJoystick joystick in allJoysticks)
+            // 모든 조이스틱 순회하며 적용
+            foreach (SkillManager joystick in allJoysticks)
             {
-                // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
                 joystick.SkillChoice();
             }
+            Level1Event = true; // 다 돌리고 나서 true로 변경
         }
-        if (playerLevel == 5 && !Level5Event)
+
+        // -------------------------------------------------------
+        // [Level 5 이벤트]
+        if (playerLevel >= 5 && !Level5Event)
         {
             Time.timeScale = 0;
+            handle2.SetActive(true);
             immediate.SetActive(true);
             continuous.SetActive(true);
-            handle2.SetActive(true);
-            Level5Event = true;
-            SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
 
-            // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
-            foreach (SkillJoystick joystick in allJoysticks)
+            // 모든 조이스틱 순회하며 적용
+            foreach (SkillManager joystick in allJoysticks)
             {
-                // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
+                joystick.skill1CoolTime = 0.5f;
                 joystick.SkillChoice();
             }
+            Level5Event = true; // 다 돌리고 나서 true로 변경
         }
-        if (playerLevel == 10 && !Level10Event)
+
+        // -------------------------------------------------------
+        // [Level 10 이벤트]
+        if (playerLevel >= 10 && !Level10Event)
         {
             handle3.SetActive(true);
-            Level10Event = true;
-            SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
 
-            // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
-            foreach (SkillJoystick joystick in allJoysticks)
+            // 모든 조이스틱 순회하며 적용
+            foreach (SkillManager joystick in allJoysticks)
             {
-                // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
-                joystick.SkillChoice();
+                joystick.skill1CoolTime = 0.3f;
+                joystick.skill2CoolTime = 1f;
+                joystick.SkillChoice(); // 여기서 3번 조이스틱 이미지도 바뀜
             }
+            Level10Event = true; // 다 돌리고 나서 true로 변경
         }
 
-        LevelText.text = "Level " + currentLevel;
-        WaveText.text = "Wave " + currentLevel; // Wave도 레벨을 따라가나요? 의도하신 게 맞는지 확인 필요
+        // -------------------------------------------------------
 
-        // [추가] 매 프레임 바 업데이트 함수 호출
+        LevelText.text = "Level " + currentLevel;
+        WaveText.text = "Wave " + currentLevel;
+
         UpdateUIBars();
     }
 
     // [핵심] HP와 EXP 바를 업데이트하는 함수
     void UpdateUIBars()
     {
-        // 슬라이더의 value는 0과 1 사이의 소수점 값이어야 합니다.
-        // 공식: 현재값 / 최대값 (예: 50/100 = 0.5 = 50%)
-
-        if (hpSlider != null)
+        if (hpBarImage != null)
         {
-            hpSlider.value = currentHP / maxHP;
+            hpBarImage.fillAmount = currentHP / maxHP;
         }
 
-        if (expSlider != null)
+        if (expBarImage != null)
         {
-            expSlider.value = currentEXP / maxEXP;
+            expBarImage.fillAmount = currentEXP / maxEXP;
         }
     }
 

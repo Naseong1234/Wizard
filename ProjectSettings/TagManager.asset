@@ -11,6 +11,7 @@ TagManager:
   - PlayerAttack
   - Explosion
   - Recovery
+  - Handle
   layers:
   - Default
   - TransparentFX

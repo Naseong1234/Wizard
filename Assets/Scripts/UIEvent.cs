@@ -53,11 +53,11 @@ public class UIEvent : MonoBehaviour
 
         Debug.Log("메서드 실행 - 모든 조이스틱 업데이트 시작");
 
-        // 2. [핵심 수정] 씬에 있는 '모든' SkillJoystick을 찾아서 배열에 담습니다.
-        SkillJoystick[] allJoysticks = FindObjectsByType<SkillJoystick>(FindObjectsSortMode.None);
+        // 2. [핵심 수정] 씬에 있는 '모든' SkillManager을 찾아서 배열에 담습니다.
+        SkillManager[] allJoysticks = FindObjectsByType<SkillManager>(FindObjectsSortMode.None);
 
         // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.
-        foreach (SkillJoystick joystick in allJoysticks)
+        foreach (SkillManager joystick in allJoysticks)
         {
             // 각 조이스틱이 GameData를 다시 읽고, 자신의 설정을 갱신하도록 함
             joystick.LoadSkillData();
