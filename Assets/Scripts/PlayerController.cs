@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     public float TeleportTimer = 0;
 
     [Header("Damage Cooldowns")]
-    private float damageCooldown = 1f; // 무적 지속 시간 (1초) -> 필요하면 2초로 늘리세요
+    private float damageCooldown = 0.3f; // 무적 지속 시간 (1초) -> 필요하면 2초로 늘리세요
     private bool isInvincible = false;
     // invincibilityTimer 변수는 이제 필요 없어서 삭제했습니다.
 

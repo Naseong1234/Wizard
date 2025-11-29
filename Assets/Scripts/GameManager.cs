@@ -29,10 +29,14 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI LevelText;
     public TextMeshProUGUI WaveText;
 
-    public GameObject Immediate;     
-    public GameObject continuous;    
-    public GameObject PlayButten;
-    public GameObject HomeButten;
+    public GameObject gameoverImage;     
+    public GameObject immediate;     
+    public GameObject continuous;
+    public GameObject homeUI;
+    public GameObject playUI;
+    public GameObject restartButten;
+    public GameObject homeButten;
+
 
     public GameObject handle1;
     public GameObject handle2;
@@ -90,7 +94,9 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         AlwaysUIEvent();
-        
+        PlayerDie();
+
+
     }
 
     public void EXPManage()
@@ -128,7 +134,7 @@ public class GameManager : MonoBehaviour
         if (playerLevel == 5 && !Level5Event)
         {
             Time.timeScale = 0;
-            Immediate.SetActive(true);
+            immediate.SetActive(true);
             continuous.SetActive(true);
             handle2.SetActive(true);
             Level5Event = true;
@@ -176,6 +182,17 @@ public class GameManager : MonoBehaviour
         if (expSlider != null)
         {
             expSlider.value = currentEXP / maxEXP;
+        }
+    }
+
+    void PlayerDie()
+    {
+        if(PlayerController.instance.isDie == true)
+        {
+            Time.timeScale = 0;
+            gameoverImage.SetActive(true);
+            restartButten.SetActive(true);
+            homeButten.SetActive(true);
         }
     }
 }

@@ -64,7 +64,7 @@ public class UIEvent : MonoBehaviour
         }
 
         // 4. UI ²ô±â
-        GameManager.instance.Immediate.SetActive(false);
+        GameManager.instance.immediate.SetActive(false);
         GameManager.instance.continuous.SetActive(false);
 
         Time.timeScale = 1;
@@ -80,16 +80,16 @@ public class UIEvent : MonoBehaviour
 
     public void OnPause()
     {
-        GameManager.instance.PlayButten.SetActive(true);
-        GameManager.instance.HomeButten.SetActive(true);
+        GameManager.instance.playUI.SetActive(true);
+        GameManager.instance.homeUI.SetActive(true);
         Time.timeScale = 0;
 
     }
 
     public void OnPlay()
     {
-        GameManager.instance.PlayButten.SetActive(false);
-        GameManager.instance.HomeButten.SetActive(false);
+        GameManager.instance.playUI.SetActive(false);
+        GameManager.instance.homeUI.SetActive(false);
 
         Time.timeScale = 1;
     }

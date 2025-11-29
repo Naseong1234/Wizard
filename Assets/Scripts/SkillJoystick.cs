@@ -11,7 +11,7 @@ public class SkillJoystick : Joystick
     [Header("레벨별 아이콘 설정")]
     public Sprite[] imagePrefab; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
 
-
+    
 
 
     [Header("Skill Settings")]
