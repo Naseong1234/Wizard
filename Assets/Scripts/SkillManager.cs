@@ -23,7 +23,7 @@ public class SkillManager : Joystick
     float coolTime = 0f;
     float skillTime = 1f;
 
-    public float skill1CoolTime = 1f;
+    public float skill1CoolTime = 1.5f;
     public float skill2CoolTime = 2f;
     float skill3CoolTime = 2f;
     public bool isSkillReady = true;
@@ -245,6 +245,8 @@ public class SkillManager : Joystick
             Destroy(vfx, effectDuration);
 
             // [핵심] 스킬을 발사한 이 순간에만 시간을 쿨타임으로 설정하고, 상태를 false로 변경
+            PlayerController.instance.HandleActions();
+
             isSkillReady = false;
             handleObject.SetActive(false);
             skillTime = coolTime; // 여기서 3초로 설정!

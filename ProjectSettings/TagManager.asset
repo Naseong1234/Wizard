@@ -12,6 +12,11 @@ TagManager:
   - Explosion
   - Recovery
   - Handle
+  - Attac1
+  - ImmediateAttac2
+  - ImmediateAttac3
+  - continuousAttac2
+  - continuousAttac3
   layers:
   - Default
   - TransparentFX

@@ -462,6 +462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3102ba8cd62c68a48a33b64293b0d3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSpeed: 3.5
   playerTransform: {fileID: 0}
   closeAttackRange: 1
   longAttackRange: 2
@@ -470,6 +471,9 @@ MonoBehaviour:
   currentHP: 0
   recoveryObj: {fileID: 6928379448455517354, guid: de8857a8ed19a5a449e45eeef10736e8, type: 3}
   explosionEffectPrefab: {fileID: 0}
+  iceEffectPrefab: {fileID: 6222600115569786722, guid: dd032f4089863d7409d6e882e3d6fec8, type: 3}
+  fireEffectPrefab: {fileID: 3671336108358374698, guid: cfa0bc2d9bf2a3042898c56bd8daa4b0, type: 3}
+  electroEffectPrefab: {fileID: 3124164209106975933, guid: b02968f8a18e90c40ab897850cabb851, type: 3}
 --- !u!54 &-9117394057951077659
 Rigidbody:
   m_ObjectHideFlags: 0

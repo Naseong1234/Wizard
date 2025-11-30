@@ -33,6 +33,7 @@ public class ArrowController : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             Debug.Log("플레이어에게 화살 명중!");
+            PlayerController.instance.PlayerTakeDamage(5);
 
             Destroy(gameObject); // 명중했으니 화살 삭제
         }

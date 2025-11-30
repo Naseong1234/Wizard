@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour
 
 
     // UI 변수 모음
-    public static float maxHP = 200f;
+    public static float maxHP = 300f;
     static float currentHP;
 
     float maxLevel = 15f;
@@ -98,7 +98,11 @@ public class GameManager : MonoBehaviour
 
     public void EXPManage()
     {
-        currentEXP += 1f;
+            
+        if(!(currentLevel == maxLevel))  
+        {
+            currentEXP += 1f;
+        }
 
         if (currentEXP >= maxEXP)
         {
@@ -113,6 +117,8 @@ public class GameManager : MonoBehaviour
 
     void AlwaysUIEvent()
     {
+        UpdateUIBars();
+
         // 최적화를 위해 모든 이벤트가 끝났으면 함수 실행 안 함 (선택 사항)
         if (Level1Event && Level5Event && Level10Event) return;
 
@@ -144,7 +150,7 @@ public class GameManager : MonoBehaviour
             // 모든 조이스틱 순회하며 적용
             foreach (SkillManager joystick in allJoysticks)
             {
-                joystick.skill1CoolTime = 0.5f;
+                joystick.skill1CoolTime = 0.8f;
                 joystick.SkillChoice();
             }
             Level5Event = true; // 다 돌리고 나서 true로 변경
@@ -159,8 +165,8 @@ public class GameManager : MonoBehaviour
             // 모든 조이스틱 순회하며 적용
             foreach (SkillManager joystick in allJoysticks)
             {
-                joystick.skill1CoolTime = 0.3f;
-                joystick.skill2CoolTime = 1f;
+                joystick.skill1CoolTime = 0.5f;
+                joystick.skill2CoolTime = 1.5f;
                 joystick.SkillChoice(); // 여기서 3번 조이스틱 이미지도 바뀜
             }
             Level10Event = true; // 다 돌리고 나서 true로 변경
@@ -168,15 +174,15 @@ public class GameManager : MonoBehaviour
 
         // -------------------------------------------------------
 
-        LevelText.text = "Level " + currentLevel;
-        WaveText.text = "Wave " + currentLevel;
+        
 
-        UpdateUIBars();
     }
 
     // [핵심] HP와 EXP 바를 업데이트하는 함수
     void UpdateUIBars()
     {
+        LevelText.text = "Level " + currentLevel;
+        WaveText.text = "Wave " + currentLevel;
         if (hpBarImage != null)
         {
             hpBarImage.fillAmount = currentHP / maxHP;

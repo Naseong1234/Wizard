@@ -7,6 +7,10 @@ public class PlayerController : MonoBehaviour
     // [추가됨 1] 순간이동 이펙트 프리팹을 담을 변수
     [Header("VFX")]
     public GameObject teleportEffectPrefab;
+    // [UI] 조이스틱 연결을 위한 변수
+    [Header("Mobile Input")]
+    public Joystick joystick; // 인스펙터에서 Fixed Joystick을 여기에 드래그해서 넣으세요.
+
 
 
     public static PlayerController instance;
@@ -35,7 +39,7 @@ public class PlayerController : MonoBehaviour
     float speed = 6;
     private bool isGrounded = true;
 
-    public float attackCool = 0.25f;
+    public float attackCool = 2f;
     public float TeleportCool = 2f;
 
     public float attackTimer = 0;
@@ -57,11 +61,10 @@ public class PlayerController : MonoBehaviour
     {
         // 죽었으면 아무것도 못하게 막음
         if (isDie) return;
-
-        playerMove();
-        HandleActions();
+          playerMove();
         Cooldown();
         PlayerDie();
+        pcTeleport();
 
         // invincibility(); <- 이 함수는 더 이상 쓰지 않으므로 삭제!
     }
@@ -75,40 +78,77 @@ public class PlayerController : MonoBehaviour
     void playerMove()
     {
         int groundMask = LayerMask.GetMask("Ground");
-        Vector3 rayOrigin = transform.position + Vector3.up * 0.1f;
-        float rayLength = 0.15f;
+        Vector3 rayOrigin = transform.position + Vector3.up * 0.3f;
+        float rayLength = 0.5f;
         isGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength, groundMask);
-        Debug.DrawRay(rayOrigin, Vector3.down * rayLength, isGrounded ? Color.green : Color.red);
 
-        float h = Input.GetAxis("Horizontal");
-        float v = Input.GetAxis("Vertical");
-        Vector3 inputDir = new Vector3(h, 0f, v).normalized;
+        // 1. 조이스틱 입력 받기
+        float h = joystick.Horizontal;
+        float v = joystick.Vertical;
 
+        // (에디터 테스트용) 조이스틱 입력이 없으면 키보드 입력 받기
+        // GetAxisRaw를 사용하여 키보드도 관성 없이 즉시 1, -1로 반응하게 함
+        if (h == 0 && v == 0)
+        {
+            h = Input.GetAxisRaw("Horizontal");
+            v = Input.GetAxisRaw("Vertical");
+        }
+
+        Vector3 inputDir = new Vector3(h, 0f, v);
+
+        // 2. 이동 로직 (관성 제거)
         if (inputDir.magnitude >= 0.1f)
         {
-            float targetAngle = Mathf.Atan2(inputDir.x, inputDir.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
+            // 입력 벡터 정규화 (대각선 이동 속도 일정하게 유지)
+            // 조이스틱을 살살 밀었을 때 천천히 걷게 하려면 .normalized를 제거하고 inputDir를 그대로 쓰면 됩니다.
+            // 여기서는 "딱 움직이고"를 원하셨으므로 정규화하여 최대 속도로 이동합니다.
+            Vector3 direction = inputDir.normalized;
+
+            // 회전 처리
+            float targetAngle = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg + cameraTransform.eulerAngles.y;
             float angle = Mathf.LerpAngle(transform.eulerAngles.y, targetAngle, Time.deltaTime * rotationSpeed);
             transform.rotation = Quaternion.Euler(0f, angle, 0f);
 
+            // 이동 방향 계산 (카메라 기준)
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
-            Vector3 moveVelocity = moveDir * speed;
 
+            // [핵심] 속도를 직접 대입하여 가속도/관성 없이 즉시 이동
+            Vector3 moveVelocity = moveDir * speed;
             rb.linearVelocity = new Vector3(moveVelocity.x, rb.linearVelocity.y, moveVelocity.z);
+
             animator.SetBool("isWalking", true);
         }
         else
         {
+            // [핵심] 입력이 없으면 속도를 즉시 0으로 만들어 멈춤 (관성 제거)
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
+            rb.angularVelocity = Vector3.zero; // 회전 관성도 제거
+
             animator.SetBool("isWalking", false);
         }
     }
+    void pcTeleport()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftShift) && TeleportTimer >= TeleportCool && isGrounded)
+        {
+            TeleportTimer = 0f;
+            transform.position += transform.forward * 7;
 
+            // 3. [추가됨] 이펙트 생성 (이동한 위치에 생성)
+            if (teleportEffectPrefab != null)
+            {
+                GameObject effect = Instantiate(teleportEffectPrefab, transform.position, transform.rotation);
+
+                Destroy(effect, 2f);
+            }
+        }
+    }
     public void OnTeleport()
     {
         if (TeleportTimer >= TeleportCool && isGrounded)
         {
             TeleportTimer = 0f;
-            transform.position += transform.forward * 5;
+            transform.position += transform.forward * 7;
 
             // 3. [추가됨] 이펙트 생성 (이동한 위치에 생성)
             if (teleportEffectPrefab != null)
@@ -120,30 +160,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void HandleActions()
+    public void HandleActions()
     {
-        if (Input.GetMouseButtonDown(0) && attackTimer >= attackCool)
+        if (attackTimer >= attackCool)
         {
             attackTimer = 0;
             animator.SetTrigger("Attack");
             Debug.Log("공격!");
         }
-
-        // [수정된 부분] 순간이동 로직
-        if (Input.GetKeyDown(KeyCode.LeftShift) && TeleportTimer >= TeleportCool && isGrounded)
-        {
-            TeleportTimer = 0f;
-            transform.position += transform.forward * 5;
-
-            // 3. [추가됨] 이펙트 생성 (이동한 위치에 생성)
-            if (teleportEffectPrefab != null)
-            {
-                GameObject effect = Instantiate(teleportEffectPrefab, transform.position, transform.rotation);
-
-                Destroy(effect, 2f);
-            }
-        }
-    }
+    }  
 
     private void OnCollisionStay(Collision collision)
     {
@@ -176,7 +201,7 @@ public class PlayerController : MonoBehaviour
                 Debug.Log("쾅! 폭발에 피격!.");
                 break;
             case "Recovery":
-                GameManager.playerHP += 20;
+                GameManager.playerHP += 30;
                 Destroy(other.gameObject);
                 break;
         }
