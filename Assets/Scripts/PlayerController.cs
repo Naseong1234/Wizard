@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
     {
         int groundMask = LayerMask.GetMask("Ground");
         Vector3 rayOrigin = transform.position + Vector3.up * 0.3f;
-        float rayLength = 0.5f;
+        float rayLength = 1f;
         isGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength, groundMask);
 
         // 1. 조이스틱 입력 받기
