@@ -228,11 +228,11 @@ public class SkillManager : Joystick
 
     private void CastSpell()
     {
-        Debug.Log($"[Skill] 발사! 목표 위치: {targetPosition}, 사용된 인덱스: {skillIndex}");
-
         if (skillEffectPrefab != null && skillEffectPrefab.Length > skillIndex)
         {
             GameObject vfx = Instantiate(skillEffectPrefab[skillIndex], targetPosition, Quaternion.identity);
+
+            SoundEvent.instance.playSound("PlayerMagic");
 
             if (damageMethod == "continuous")
             {

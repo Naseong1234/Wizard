@@ -15,10 +15,10 @@ public class GameManager : MonoBehaviour
 
 
     // UI 변수 모음
-    public static float maxHP = 300f;
+    public static float maxHP = 400;
     static float currentHP;
 
-    static float bossMaxHP = 3000;
+    static float bossMaxHP = 4000;
     static float bossCurrentHP;
 
     float maxLevel = 15f;

@@ -318,6 +318,7 @@ public class MonsterController : MonoBehaviour
     {
         // 1. 애니메이션은 처음에 한 번만 실행
         animator.SetTrigger("Fireball");
+        SoundEvent.instance.playSound("Fireball");
 
         // 2. 5번 반복 발사
         for (int i = 0; i < 5; i++)

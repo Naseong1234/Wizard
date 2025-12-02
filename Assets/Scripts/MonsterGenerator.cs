@@ -25,6 +25,7 @@ public class MonsterGenerator : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        BossSpawn = false;
         createTime = Random.Range(minTime, maxTime);
         monsterSpawn = Random.Range(1,11);
 

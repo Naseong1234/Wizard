@@ -246,8 +246,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79f7f47e50ca86b4c9154c05f72c409f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginnusic: {fileID: 0}
-  gameMusuc: {fileID: 0}
+  loginnusic: {fileID: 8300000, guid: fa91cc2bb5a774645b6ff5a751c44dae, type: 3}
+  gameMusuc: {fileID: 8300000, guid: d09415702bd3fe64aa9a560710051ad7, type: 3}
 --- !u!4 &3008336
 Transform:
   m_ObjectHideFlags: 0

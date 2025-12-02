@@ -149,6 +149,7 @@ public class PlayerController : MonoBehaviour
         {
             TeleportTimer = 0f;
             transform.position += transform.forward * 7;
+            SoundEvent.instance.playSound("Teleport");
 
             // 3. [추가됨] 이펙트 생성 (이동한 위치에 생성)
             if (teleportEffectPrefab != null)
@@ -197,7 +198,7 @@ public class PlayerController : MonoBehaviour
         switch (other.gameObject.tag)
         {
             case "Recovery":
-                GameManager.playerHP += 30;
+                GameManager.playerHP += 40;
                 Destroy(other.gameObject);
                 break;
         }
