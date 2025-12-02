@@ -1,6 +1,5 @@
 using System.Threading;
 using UnityEngine;
-using static UnityEditor.Progress;
 
 public class MonsterGenerator : MonoBehaviour
 {
