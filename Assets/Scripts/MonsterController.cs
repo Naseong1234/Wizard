@@ -40,7 +40,7 @@ public class MonsterController : MonoBehaviour
     private bool isParalyzed = false;
 
     // 컴포넌트
-    private Long_range_Attack_Generator arrowGenerator;
+    private Long_range_Attack_Generator Long_Attack_Generator;
     private Animator animator;
     private Vector3 lastPosition;
 
@@ -55,7 +55,7 @@ public class MonsterController : MonoBehaviour
         currentHP = maxHP;
         lastPosition = transform.position;
 
-        arrowGenerator = GetComponent<Long_range_Attack_Generator>();
+        Long_Attack_Generator = GetComponent<Long_range_Attack_Generator>();
         recovery = Random.Range(1, 101);
     }
 
@@ -132,7 +132,7 @@ public class MonsterController : MonoBehaviour
             {
                 case "Skeleton_Archer":
                     animator.SetTrigger("Attack1");
-                    arrowGenerator.FireAttack();
+                    Long_Attack_Generator.FireAttack();
                     attackTimer = 0;
                     break;
 
@@ -281,7 +281,7 @@ public class MonsterController : MonoBehaviour
         while (currentHP > 0)
         {
             // 1초 동안 정상 이동
-            yield return new WaitForSeconds(1.0f);
+            yield return new WaitForSeconds(2.0f);
 
             // 현재 속도 저장 (얼음 맞았으면 느린 속도가 저장됨)
             float savedSpeed = moveSpeed;
@@ -309,7 +309,7 @@ public class MonsterController : MonoBehaviour
             // 플레이어가 죽었거나 없으면 중단
             if (player == null || PlayerController.instance.isDie) yield break;
             {
-                arrowGenerator.FireAttack();
+                Long_Attack_Generator.FireAttack();
             }
 
             // 0.1초 대기

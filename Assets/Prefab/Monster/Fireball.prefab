@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 6580830533280867164}
   - component: {fileID: 2742064294114062005}
   - component: {fileID: 3379393286350129523}
-  m_Layer: 0
-  m_Name: Fireboll
+  m_Layer: 9
+  m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,9 +116,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3522727051094699129, guid: cfa0bc2d9bf2a3042898c56bd8daa4b0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 3671336108358374698, guid: cfa0bc2d9bf2a3042898c56bd8daa4b0, type: 3}
       propertyPath: m_Name
       value: Fire
+      objectReference: {fileID: 0}
+    - target: {fileID: 3671336108358374698, guid: cfa0bc2d9bf2a3042898c56bd8daa4b0, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7395290903766499800, guid: cfa0bc2d9bf2a3042898c56bd8daa4b0, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

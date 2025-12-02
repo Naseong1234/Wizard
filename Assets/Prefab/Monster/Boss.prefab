@@ -1258,7 +1258,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   arrowPrefab: {fileID: 4448536611248148770, guid: 514911623c943904a9e11cc1b8ed0c44, type: 3}
-  FirebollPrefab: {fileID: 1329357859851394908, guid: e5b5b2d0e73f95b4dae0a1756565995e, type: 3}
+  FireballPrefab: {fileID: 1329357859851394908, guid: e5b5b2d0e73f95b4dae0a1756565995e, type: 3}
 --- !u!114 &173337783178500025
 MonoBehaviour:
   m_ObjectHideFlags: 0

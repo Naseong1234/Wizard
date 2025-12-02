@@ -4,7 +4,7 @@ using UnityEngine;
 public class Long_range_Attack_Generator : MonoBehaviour
 {
     public GameObject arrowPrefab; // 인스펙터에 화살 프리팹 연결
-    public GameObject FirebollPrefab; // 인스펙터에 화살 프리팹 연결
+    public GameObject FireballPrefab; // 인스펙터에 화살 프리팹 연결
 
     void Start()
     {
@@ -21,7 +21,7 @@ public class Long_range_Attack_Generator : MonoBehaviour
 
                 break;
             case "Boss":
-                Instantiate(FirebollPrefab, transform.position, transform.rotation);
+                Instantiate(FireballPrefab, transform.position, transform.rotation);
 
                 break;
         }
