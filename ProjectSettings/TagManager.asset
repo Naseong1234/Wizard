@@ -17,6 +17,7 @@ TagManager:
   - ImmediateAttac3
   - continuousAttac2
   - continuousAttac3
+  - DeadObj
   layers:
   - Default
   - TransparentFX

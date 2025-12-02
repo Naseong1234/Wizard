@@ -97,7 +97,7 @@ public class MonsterGenerator : MonoBehaviour
                     monster = Instantiate(Skeleton_Archer);
                 }
             }
-
+            /*
             if (GameManager.playerLevel == 15)
             {
                 if (!BossSpawn)
@@ -106,6 +106,7 @@ public class MonsterGenerator : MonoBehaviour
                     BossSpawn = true;
                 }
             }
+            */
 
 
 

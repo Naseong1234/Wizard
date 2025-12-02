@@ -218,6 +218,14 @@ public class MonsterController : MonoBehaviour
         }
     }
 
+    private void OnCollisionEnter(Collision collision)
+    {
+        if(collision.gameObject.tag == "DeadObj")
+        {
+            Destroy(gameObject);
+        }
+    }
+
     // [핵심 수정] 데미지 함수에 쿨타임 적용
     public void MonsterTakeDamage(float damageAmount)
     {
