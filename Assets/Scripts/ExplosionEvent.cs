@@ -1,13 +1,13 @@
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
 
-public class AnimationEvent : MonoBehaviour
+public class ExplosionEvent : MonoBehaviour
 {
     // 여기부터
     // 부모~자식 에 있는 파티클을 동시에 실행하는 방법을 모르겠어서 AI의 도움을 받았습니다
     MonsterController monster;
     // 단일 ParticleSystem 대신 모든 파티클 시스템을 담을 배열로 변경
-    private ParticleSystem[] allParticleSystems;
+    ParticleSystem[] allParticleSystems;
 
     private void Start()
     {

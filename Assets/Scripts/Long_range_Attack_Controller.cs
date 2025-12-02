@@ -3,29 +3,41 @@ using static UnityEngine.GraphicsBuffer;
 
 public class Long_range_Attack_Controller : MonoBehaviour
 {
-    private float speed = 6f; // 화살 속도
+    private float ArrowSpeed = 6f; // 화살 속도
+    private float Firespeed = 12f; // 파이어볼 속도
     private float lifeTime = 4f; // 4초 후 자동 삭제
     public float arrowRotation = 90f;
     GameObject target;
 
-    Vector3 direction;
+    Vector3 ArrowDirection;
+    Vector3 FireballDirection;
     void Start()
     {
+
         target = GameObject.Find("Player");
-        direction = (target.transform.position - transform.position).normalized;
+        FireballDirection = (target.transform.position - transform.position).normalized;
         Destroy(gameObject, lifeTime);
     }
 
     void Update()
     {
-        if (!PlayerController.instance.isDie)
+        move();
+    }
+
+    void move()
+    {
+        Vector3 targetPos = target.transform.position;
+        transform.LookAt(targetPos);
+        transform.Rotate(arrowRotation, 0, 0);
+        ArrowDirection = (target.transform.position - transform.position).normalized;
+
+        if (gameObject.CompareTag("Arrow"))
         {
-            Vector3 targetPos = target.transform.position;
-            transform.LookAt(targetPos);
-
-            transform.Rotate(arrowRotation, 0, 0);
-
-            transform.position += direction * speed * Time.deltaTime;
+            transform.position += ArrowDirection * ArrowSpeed * Time.deltaTime;
+        }
+        if (gameObject.CompareTag("Fireball"))
+        {
+            transform.position += FireballDirection * Firespeed * Time.deltaTime;
         }
     }
 
@@ -38,14 +50,14 @@ public class Long_range_Attack_Controller : MonoBehaviour
             {
                 case "Arrow":
                     {
-                        PlayerController.instance.PlayerTakeDamage(5);
+                        PlayerController.instance.PlayerTakeDamage(10);
                         break;
 
                     }
 
-                case "Fireboll":
+                case "Fireball":
                     {
-
+                        Debug.Log("파이어볼 피격");
                         PlayerController.instance.PlayerTakeDamage(30);
 
                         break;

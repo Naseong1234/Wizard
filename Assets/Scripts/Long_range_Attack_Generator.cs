@@ -16,7 +16,7 @@ public class Long_range_Attack_Generator : MonoBehaviour
     {
         switch (gameObject.tag)
         {
-            case "Skeleton_warrior":
+            case "Skeleton_Archer":
                 Instantiate(arrowPrefab, transform.position, transform.rotation);
 
                 break;

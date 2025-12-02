@@ -102,6 +102,7 @@ public class MonsterGenerator : MonoBehaviour
             {
                 if (!BossSpawn)
                 {
+                    GameManager.instance.bossHPObj.SetActive(true);
                     monster = Instantiate(Boss);
                     BossSpawn = true;
                 }

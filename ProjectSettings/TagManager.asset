@@ -19,6 +19,8 @@ TagManager:
   - continuousAttac3
   - DeadObj
   - Boss
+  - Arrow
+  - Fireball
   layers:
   - Default
   - TransparentFX

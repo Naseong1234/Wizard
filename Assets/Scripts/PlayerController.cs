@@ -196,10 +196,6 @@ public class PlayerController : MonoBehaviour
 
         switch (other.gameObject.tag)
         {
-            case "Explosion":
-                PlayerTakeDamage(30);
-                Debug.Log("쾅! 폭발에 피격!.");
-                break;
             case "Recovery":
                 GameManager.playerHP += 30;
                 Destroy(other.gameObject);
@@ -211,7 +207,7 @@ public class PlayerController : MonoBehaviour
     public void PlayerTakeDamage(float damage)
     {
         // 사망했거나 무적이면 데미지 무시
-        if (GameManager.playerHP <= 0 || isInvincible) return;
+        if (isDie || isInvincible) return;
 
         GameManager.playerHP -= damage;
         Debug.Log($"HP 감소! 현재 HP: {GameManager.playerHP}");

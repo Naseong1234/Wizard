@@ -13,7 +13,7 @@ public class MonsterController : MonoBehaviour
     Transform playerTransform;
     public float closeAttackRange = 1.5f;
     public float longAttackRange = 20f;
-    public float attackCooldown = 1f;
+    public float attackCooldown = 2f;
     private float attackTimer = 0f;
 
     [Header("몬스터 체력 설정")]
@@ -149,6 +149,7 @@ public class MonsterController : MonoBehaviour
             {
                 case "Bomb_Slime":
                     isExploding = true;
+                    GameManager.playerHP -= 30;
                     animator.SetTrigger("isBomb");
                     break;
                 case "Normal_Slime":
@@ -218,13 +219,15 @@ public class MonsterController : MonoBehaviour
 
         // 2. 무기 태그에 따른 데미지 처리
         // OnTriggerStay라 계속 호출되지만, MonsterTakeDamage 내부의 쿨타임 로직 때문에 0.5초마다 적용됨
+
+        
         switch (other.gameObject.tag)
         {
-            case "Attac1": MonsterTakeDamage(20); break;
-            case "ImmediateAttac2": MonsterTakeDamage(30); break;
-            case "ImmediateAttac3": MonsterTakeDamage(50); break;
-            case "continuousAttac2": MonsterTakeDamage(80); break;
-            case "continuousAttac3": MonsterTakeDamage(100); break;
+            case "Attac1":MonsterTakeDamage(20);break;
+            case "ImmediateAttac2":MonsterTakeDamage(30);break;
+            case "ImmediateAttac3":MonsterTakeDamage(50);break;
+            case "continuousAttac2":MonsterTakeDamage(80);break;
+            case "continuousAttac3":MonsterTakeDamage(100);break;
         }
     }
 
@@ -245,13 +248,27 @@ public class MonsterController : MonoBehaviour
         // 2. 쿨타임 시작 (이제 0.5초간 isDamageCooldown이 true가 됨)
         StartCoroutine(DamageCooldownRoutine());
 
+        if (gameObject.CompareTag("Boss"))
+        {
+            GameManager.bossHP -= damageAmount;
+
+        }
+        else
+        {
+            currentHP -= damageAmount;
+        }
         // 3. 실제 데미지 처리
-        currentHP -= damageAmount;
+        
         animator.SetTrigger("OnHit");
 
         if (currentHP <= 0)
         {
             currentHP = 0;
+            Die();
+        }
+        if (GameManager.bossHP <= 0)
+        {
+            GameManager.bossHP = 0;
             Die();
         }
     }
@@ -288,7 +305,6 @@ public class MonsterController : MonoBehaviour
 
             // 속도를 0으로 만들어 멈춤
             moveSpeed = 0;
-            animator.SetTrigger("OnHit");
 
             // 0.5초 대기 (마비)
             yield return new WaitForSeconds(0.5f);
@@ -331,7 +347,7 @@ public class MonsterController : MonoBehaviour
         GameManager.currentMonster -= 1;
         GameManager.instance.EXPManage();
 
-        if (recovery <= 2)
+        if (recovery <= 1)
         {
             Instantiate(recoveryObj, transform.position + Vector3.up * 1, transform.rotation);
         }
