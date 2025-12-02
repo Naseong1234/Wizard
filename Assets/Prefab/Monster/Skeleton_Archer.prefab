@@ -209,6 +209,7 @@ GameObject:
   - component: {fileID: 2679881376880498858}
   - component: {fileID: 4787163846913088083}
   - component: {fileID: 4130271670466897065}
+  - component: {fileID: 2788446286420946911}
   m_Layer: 8
   m_Name: Skeleton_Archer
   m_TagString: Skeleton_Archer
@@ -282,7 +283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3102ba8cd62c68a48a33b64293b0d3d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 3.5
   playerTransform: {fileID: 0}
   closeAttackRange: 1.5
   longAttackRange: 10
@@ -344,6 +344,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &2788446286420946911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 601338660872130166}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 486693078e8ad8d45b8862ae8214c850, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowPrefab: {fileID: 4448536611248148770, guid: 514911623c943904a9e11cc1b8ed0c44, type: 3}
+  FirebollPrefab: {fileID: 1329357859851394908, guid: e5b5b2d0e73f95b4dae0a1756565995e, type: 3}
 --- !u!1 &639104701502738209
 GameObject:
   m_ObjectHideFlags: 0
@@ -1659,7 +1673,6 @@ GameObject:
   m_Component:
   - component: {fileID: 5741176405104179453}
   - component: {fileID: 5198975828676862902}
-  - component: {fileID: 8366519870782012307}
   m_Layer: 8
   m_Name: Bow_Newbie_02_Gn
   m_TagString: Untagged
@@ -1706,19 +1719,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &8366519870782012307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4964955982555177543}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 486693078e8ad8d45b8862ae8214c850, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrowPrefab: {fileID: 4448536611248148770, guid: 514911623c943904a9e11cc1b8ed0c44, type: 3}
 --- !u!1 &5027501796206245419
 GameObject:
   m_ObjectHideFlags: 0

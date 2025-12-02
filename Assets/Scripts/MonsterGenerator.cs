@@ -20,7 +20,7 @@ public class MonsterGenerator : MonoBehaviour
 
 
     float monsterSpawn;
-    bool BossSpawn = false;
+    static bool BossSpawn = false;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -97,16 +97,16 @@ public class MonsterGenerator : MonoBehaviour
                     monster = Instantiate(Skeleton_Archer);
                 }
             }
-            /*
+            
             if (GameManager.playerLevel == 15)
             {
                 if (!BossSpawn)
                 {
-                    Instantiate(Boss);
+                    monster = Instantiate(Boss);
                     BossSpawn = true;
                 }
             }
-            */
+            
 
 
 

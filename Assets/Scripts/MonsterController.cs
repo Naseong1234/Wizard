@@ -10,7 +10,7 @@ public class MonsterController : MonoBehaviour
 
     [Header("플레이어 및 공격 설정")]
     GameObject player;
-    public Transform playerTransform;
+    Transform playerTransform;
     public float closeAttackRange = 1.5f;
     public float longAttackRange = 20f;
     public float attackCooldown = 1f;
@@ -40,7 +40,7 @@ public class MonsterController : MonoBehaviour
     private bool isParalyzed = false;
 
     // 컴포넌트
-    private ArrowGenerator arrowGenerator;
+    private Long_range_Attack_Generator arrowGenerator;
     private Animator animator;
     private Vector3 lastPosition;
 
@@ -55,7 +55,7 @@ public class MonsterController : MonoBehaviour
         currentHP = maxHP;
         lastPosition = transform.position;
 
-        arrowGenerator = GetComponentInChildren<ArrowGenerator>();
+        arrowGenerator = GetComponent<Long_range_Attack_Generator>();
         recovery = Random.Range(1, 101);
     }
 
@@ -125,18 +125,25 @@ public class MonsterController : MonoBehaviour
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
-        // 1. 스켈레톤 아처 (원거리)
-        if (gameObject.CompareTag("Skeleton_Archer"))
+
+        if (distanceToPlayer <= longAttackRange)
         {
-            if (distanceToPlayer <= longAttackRange)
+            switch (gameObject.tag)
             {
-                animator.SetTrigger("Attack1");
-                arrowGenerator.FireArrow();
-                attackTimer = 0;
+                case "Skeleton_Archer":
+                    animator.SetTrigger("Attack1");
+                    arrowGenerator.FireAttack();
+                    attackTimer = 0;
+                    break;
+
+                case "Boss":
+                    StartCoroutine(BossFireballRoutine());
+                    attackTimer = 0;
+                    break;
             }
         }
-        // 2. 근접 몬스터들
-        else if (distanceToPlayer <= closeAttackRange)
+
+        if (distanceToPlayer <= closeAttackRange)
         {
             switch (gameObject.tag)
             {
@@ -149,6 +156,9 @@ public class MonsterController : MonoBehaviour
                     break;
                 case "Skeleton_warrior":
                     animator.SetTrigger("Attack1");
+                    break;
+                case "Boss":
+                    animator.SetTrigger("NormalAttack");
                     break;
             }
             attackTimer = 0;
@@ -286,6 +296,24 @@ public class MonsterController : MonoBehaviour
 
             // 원래 속도로 복구
             moveSpeed = savedSpeed;
+        }
+    }
+    IEnumerator BossFireballRoutine()
+    {
+        // 1. 애니메이션은 처음에 한 번만 실행
+        animator.SetTrigger("Fireball");
+
+        // 2. 5번 반복 발사
+        for (int i = 0; i < 5; i++)
+        {
+            // 플레이어가 죽었거나 없으면 중단
+            if (player == null || PlayerController.instance.isDie) yield break;
+            {
+                arrowGenerator.FireAttack();
+            }
+
+            // 0.1초 대기
+            yield return new WaitForSeconds(0.1f);
         }
     }
 
