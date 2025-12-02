@@ -27,7 +27,7 @@ public class SoundEvent : MonoBehaviour
                 switch (clip.name)
                 {
                     case "PlayerMagic":
-                        audioSource.PlayOneShot(clip, 0.2f);
+                        audioSource.PlayOneShot(clip, 0.4f);
 
                         break;
 

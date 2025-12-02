@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = true;
 
     public float attackCool = 2f;
-    public float TeleportCool = 2f;
+    public float TeleportCool = 1.5f;
 
     public float attackTimer = 0;
     public float TeleportTimer = 0;
@@ -192,9 +192,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // 气惯档 公利老 订 救 嘎澜
-        if (isInvincible) return;
-
         switch (other.gameObject.tag)
         {
             case "Recovery":

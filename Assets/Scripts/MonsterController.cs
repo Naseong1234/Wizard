@@ -227,7 +227,7 @@ public class MonsterController : MonoBehaviour
             case "ImmediateAttac2":MonsterTakeDamage(30);break;
             case "ImmediateAttac3":MonsterTakeDamage(50);break;
             case "continuousAttac2":MonsterTakeDamage(80);break;
-            case "continuousAttac3":MonsterTakeDamage(100);break;
+            case "continuousAttac3":MonsterTakeDamage(150);break;
         }
     }
 
@@ -348,7 +348,7 @@ public class MonsterController : MonoBehaviour
         GameManager.currentMonster -= 1;
         GameManager.instance.EXPManage();
 
-        if (recovery <= 1)
+        if (recovery <= 1.5)
         {
             Instantiate(recoveryObj, transform.position + Vector3.up * 1, transform.rotation);
         }

@@ -118,7 +118,7 @@ public class MonsterGenerator : MonoBehaviour
             Vector2 randomDir = Random.insideUnitCircle.normalized;
 
             // 2. '거리'를 6 ~ 9 사이에서 랜덤으로 정합니다.
-            float randomDistance = Random.Range(10f, 12f);
+            float randomDistance = Random.Range(12f, 14f);
 
             // 3. (방향 * 거리)를 해서 최종 오프셋을 만듭니다.
             Vector2 spawnOffset = randomDir * randomDistance;
