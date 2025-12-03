@@ -63,7 +63,7 @@ public class Long_range_Attack_Controller : MonoBehaviour
                         break;
                     }
             }
-            Destroy(gameObject); // 명중했으니 화살 삭제
+            Destroy(gameObject); 
         }
     }
 }

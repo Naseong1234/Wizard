@@ -1,13 +1,13 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI; // [필수] 이미지 변경을 위해 필요
+using UnityEngine.UI;
 
-
-public class SkillManager : Joystick
+// 스킬 조이스틱 에셋을 활용하여 스킬 조이스틱을 만들려고 혼자서 막 뜯어 봤지만 전혀 감이 안잡혀서...
+// 저는 제 머리속 구상을 정리해서 질문 하고 그 값을 적용 시키는 식으로 이 스크립트의 대부분을 ai의 도움을 받았습니다..!
+public class SkillManager : Joystick 
 {
     [Header("UI Handle Object")]
-    // [중요] 여기에 유니티 인스펙터에서 Handle 오브젝트를 드래그해서 넣으세요!
     public GameObject handleObject;
 
     [Header("스킬 쿨타임 텍스트")]
@@ -18,7 +18,7 @@ public class SkillManager : Joystick
     public Image skillButtonImage; // 바뀌어야 할 스킬 버튼의 Image 컴포넌트
 
     [Header("레벨별 아이콘 설정")]
-    public Sprite[] imagePrefab; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
+    public Sprite[] imagePrefab; 
 
     float coolTime = 0f;
     float skillTime = 1f;
@@ -30,13 +30,13 @@ public class SkillManager : Joystick
 
     [Header("Skill Settings")]
     public Transform player;
-    public GameObject skillObj; // 이건 바닥에 보이는 파란 원 (인디케이터)
+    public GameObject skillObj; // 이건 바닥에 보이는 파란 원
 
 
 
-    [Header("VFX Settings")] // [추가됨] 이펙트 설정
-    public GameObject[] skillEffectPrefab = new GameObject[6]; // [추가됨] 실제 터질 파티클 프리팹을 여기에 넣으세요
-    public float effectDuration = 2f;    // [추가됨] 파티클이 몇 초 뒤에 사라질지
+    [Header("effect Settings")] 
+    public GameObject[] skillEffectPrefab = new GameObject[6];
+    public float effectDuration = 2f; 
 
     [Header("Range Settings")]
     public float maxSkillRange = 5f;
@@ -50,18 +50,18 @@ public class SkillManager : Joystick
     public static SkillManager instance = null;
 
 
-    // [추가됨] 현재 선택된 속성을 저장할 변수 (외부 버튼 등에서 이 값을 "Fire", "Ice" 등으로 바꿔줘야 함)
-    public string elemental;
-    public string damageMethod;
+    // 현재 선택된 속성을 저장할 변수 
+    public string elemental; // 속성
+    public string damageMethod; // 공격 방식
 
-    // [추가됨] 실제로 발사할 프리팹의 배열 번호 (0~5)
+    // 실제로 발사할 프리팹의 배열 번호
     private int skillIndex = 1;
     private bool firstChoice = false;
 
 
     private void Awake() // Awake는 start보다 먼저 실행됨
     {
-        if (instance == null) // GameManager 변수인 instance는 static으로 선언했기에 하나만 존재 하느넫 하나를 null일 경우 즉 맨처음만 instance에 자신을 적용하는 즉 하나만 생성하겠다! 하는거임
+        if (instance == null)
         {
             instance = this;
 
@@ -71,7 +71,7 @@ public class SkillManager : Joystick
 
     protected override void Start()
     {
-        // [수정 2] 시작 시 쿨타임 시간을 0으로 초기화하여 바로 사용 가능하게 만듦
+        // 시작 시 쿨타임 시간을 0으로 초기화하여 바로 사용 가능하게 만듦
         skillTime = 0f;
         isSkillReady = true; // 확실하게 true로 설정
         base.Start();
@@ -79,7 +79,7 @@ public class SkillManager : Joystick
 
         LoadSkillData();
 
-        // [핵심] 게임 시작 시 한번 강제로 체크하여 자물쇠인 녀석들의 핸들을 끕니다.
+        // 게임 시작 시 한번 강제로 체크하여 자물쇠인 녀석들의 핸들을 끕니다.
         CheckCooldown();
     }
 
@@ -90,7 +90,7 @@ public class SkillManager : Joystick
 
     private void CheckCooldown()
     {
-        // 1. [최우선 순위] 현재 이미지가 자물쇠(Lock)라면 핸들을 끄고 로직 중단
+        // 1.  현재 이미지가 자물쇠(Lock)라면 핸들을 끄고 로직 중단
         if (IsLockIcon())
         {
             if (handleObject != null && handleObject.activeSelf)
@@ -142,7 +142,7 @@ public class SkillManager : Joystick
         }
     }
 
-    // [핵심 로직] 현재 이미지가 자물쇠인지 판별하는 함수
+    // 현재 이미지가 자물쇠인지 판별하는 함수
     public bool IsLockIcon()
     {
         if (skillButtonImage != null && imagePrefab != null && imagePrefab.Length > 0)
@@ -166,7 +166,7 @@ public class SkillManager : Joystick
         return false;
     }
 
-    // [핵심 2] 터치 시작(클릭) 시 잠금이면 무시
+    // 터치 시작(클릭) 시 잠금이면 무시
     public override void OnPointerDown(PointerEventData eventData)
     {
         if (IsLocked()) return;
@@ -258,13 +258,11 @@ public class SkillManager : Joystick
     }
     public void LoadSkillData()
     {
-        // GameData에서 값을 가져와 내 변수에 넣기
         this.elemental = GameManager.selectedElement;
         this.damageMethod = GameManager.selectedDamageMethod;
 
         Debug.Log($"[SkillManager] 데이터 로드 완료: {elemental} / {damageMethod}");
 
-        // 가져온 데이터를 바탕으로 스킬 인덱스 설정 (SkillChoice 호출)
         SkillChoice();
     }
 

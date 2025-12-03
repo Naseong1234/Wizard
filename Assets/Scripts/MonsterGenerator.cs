@@ -44,7 +44,7 @@ public class MonsterGenerator : MonoBehaviour
 
     void CreateMonster()
     {
-        if (GameManager.currentMonster >= GameManager.maxMonster) return; // > 가 아니라 >= 가 안전합니다.
+        if (GameManager.currentMonster >= GameManager.maxMonster) return; 
         currentTime += Time.deltaTime;
         if (currentTime > createTime)// 현재 시간이 생성주기를 넘으면
         {
@@ -113,7 +113,7 @@ public class MonsterGenerator : MonoBehaviour
 
 
             //여기부터
-            //캐릭터를 중심으로 원 방향으로 8~10 정도의 범위 내에서 랜덤 소환하는 코드를 구현하고 싶었으나 지식이 부족하여 AI의 도움을 받았습니다
+            //캐릭터를 중심으로 원 방향으로 12~14 정도의 범위 내에서 랜덤 소환하는 코드를 구현하고 싶었으나 지식이 부족하여 ai의 도움을 받았습니다
             // 1. 랜덤한 '방향'을 구합니다. (반지름 1인 원의 테두리 어딘가)
             Vector2 randomDir = Random.insideUnitCircle.normalized;
 

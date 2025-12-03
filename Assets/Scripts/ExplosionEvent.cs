@@ -4,7 +4,7 @@ using static UnityEngine.ParticleSystem;
 public class ExplosionEvent : MonoBehaviour
 {
     // 여기부터
-    // 부모~자식 에 있는 파티클을 동시에 실행하는 방법을 모르겠어서 AI의 도움을 받았습니다
+    // 부모~자식 에 있는 파티클을 동시에 실행하는 방법을 모르겠어서 ai의 도움을 받았습니다
     MonsterController monster;
     // 단일 ParticleSystem 대신 모든 파티클 시스템을 담을 배열로 변경
     ParticleSystem[] allParticleSystems;
@@ -17,14 +17,13 @@ public class ExplosionEvent : MonoBehaviour
         monster = GetComponent<MonsterController>();
 
         // 안전을 위해 시작 시 모든 파티클을 멈춥니다.
-        // (만약 파티클이 Play On Awake 설정되어 있다면 여기서 멈춰야 합니다.)
         foreach (ParticleSystem ps in allParticleSystems)
         {
             ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
         }
     }
 
-    // 애니메이션 이벤트에서 호출될 함수입니다. (기존 함수명을 유지합니다.)
+    // 애니메이션 이벤트에서 호출될 함수입니다.
     public void Action(string phase)
     {
         if (phase == "Explosion")

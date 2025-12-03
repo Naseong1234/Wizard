@@ -1,7 +1,5 @@
 using UnityEngine;
-using System.Collections; // 코루틴 사용을 위해 추가
-
-// [중요] NavMeshAgent 관련 using은 삭제했습니다.
+using System.Collections; 
 
 public class MonsterController : MonoBehaviour
 {
@@ -28,7 +26,7 @@ public class MonsterController : MonoBehaviour
 
     [Header("이펙트 설정")]
     public GameObject explosionEffectPrefab;
-    // --- [추가됨] 속성별 상태이상 파티클 프리팹 ---
+    // --- [속성별 상태이상 파티클 프리팹 ---
     public GameObject iceEffectPrefab;    // 얼음 파티클
     public GameObject fireEffectPrefab;   // 화상 파티클
     public GameObject electroEffectPrefab; // 감전 파티클
@@ -50,7 +48,6 @@ public class MonsterController : MonoBehaviour
     {
         player = GameObject.Find("Player");
         animator = GetComponent<Animator>();
-        // navAgent = GetComponent<NavMeshAgent>(); // <--- 삭제됨
 
         currentHP = maxHP;
         lastPosition = transform.position;
@@ -66,42 +63,29 @@ public class MonsterController : MonoBehaviour
             playerTransform = player.transform;
             attackTimer += Time.deltaTime;
 
-            // 1. 이동 처리 (새로 만든 함수)
             MoveToPlayer();
-
-            // 2. 애니메이션 처리
-            CheckMovementAnimation(); // 이름 명확하게 변경
-
-            // 3. 공격 처리
+            CheckMovementAnimation(); 
             HandleAttack();
-
-            // 4. 거리 체크 (너무 멀면 삭제)
             CheckDistance();
         }
     }
 
-    // [핵심] NavMesh 없이 직접 움직이는 함수
     void MoveToPlayer()
     {
         // 자폭 중이거나 감전(속도 0) 상태라면 움직이지 않음
         if (isExploding || moveSpeed <= 0) return;
 
         float distance = Vector3.Distance(transform.position, playerTransform.position);
-        float stopDistance = closeAttackRange; // 기본적으로 근접 공격 범위에서 멈춤
+        float stopDistance = closeAttackRange; 
 
-        // 스켈레톤 아처는 원거리 공격 범위에서 멈춤
         if (gameObject.CompareTag("Skeleton_Archer"))
         {
             stopDistance = longAttackRange;
         }
 
-        // 공격 사거리보다 멀리 있을 때만 이동
         if (distance > stopDistance)
         {
-            // 1. 플레이어를 바라봄 (높이 차이 무시하고 Y축 회전만 하려면 코드가 길어지므로, 일단 기본 LookAt 사용)
             transform.LookAt(playerTransform);
-
-            // 2. 앞으로 이동 (초당 moveSpeed 만큼)
             transform.Translate(Vector3.forward * moveSpeed * Time.deltaTime);
         }
     }
@@ -169,11 +153,9 @@ public class MonsterController : MonoBehaviour
 
     void OnTriggerStay(Collider other)
     {
-        // 1. 무기 속성에 따른 효과 (상태 이상 적용 및 파티클)
-        // 상태 이상은 한 번만 걸리면 되므로 !isSlowed 등의 플래그 체크가 이미 중복 실행을 막아줍니다.
+        //속성에 따른 효과
         switch (GameManager.selectedElement)
         {
-            case "ice": // 대소문자 주의 (GameManager 설정에 따름)
             case "Ice":
                 if (!isSlowed)
                 {
@@ -217,11 +199,7 @@ public class MonsterController : MonoBehaviour
                 break;
         }
 
-        // 2. 무기 태그에 따른 데미지 처리
-        // OnTriggerStay라 계속 호출되지만, MonsterTakeDamage 내부의 쿨타임 로직 때문에 0.5초마다 적용됨
-
-        
-        switch (other.gameObject.tag)
+        switch (other.gameObject.tag) // 테그로 분류해서 당하는 공격 구분
         {
             case "Attac1":MonsterTakeDamage(20);break;
             case "ImmediateAttac2":MonsterTakeDamage(30);break;
@@ -231,7 +209,7 @@ public class MonsterController : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter(Collision collision) // 맵 외각 울타리 접근시 죽음
     {
         if(collision.gameObject.tag == "DeadObj")
         {
@@ -239,13 +217,12 @@ public class MonsterController : MonoBehaviour
         }
     }
 
-    // [핵심 수정] 데미지 함수에 쿨타임 적용
-    public void MonsterTakeDamage(float damageAmount)
+    public void MonsterTakeDamage(float damageAmount) // 몬스터 무적 문제 부분을 ai의 도움을 받았습니다
     {
         // 1. 이미 데미지를 입어서 쿨타임 중(무적)이라면 무시하고 리턴
         if (isDamageCooldown) return;
 
-        // 2. 쿨타임 시작 (이제 0.5초간 isDamageCooldown이 true가 됨)
+        // 2. 쿨타임 시작 
         StartCoroutine(DamageCooldownRoutine());
 
         if (gameObject.CompareTag("Boss"))
@@ -272,15 +249,15 @@ public class MonsterController : MonoBehaviour
             Die();
         }
     }
-    // [추가됨] 0.5초간 무적 시간을 주는 코루틴
+    // 0.3초간 무적 시간을 주는 코루틴
     IEnumerator DamageCooldownRoutine()
     {
         isDamageCooldown = true;        // 쿨타임 시작
-        yield return new WaitForSeconds(0.3f); // 0.5초 대기
-        isDamageCooldown = false;       // 쿨타임 종료 (다시 맞을 수 있음)
+        yield return new WaitForSeconds(0.3f); // 0.3초 대기
+        isDamageCooldown = false;       // 쿨타임 종료 
     }
 
-    // --- 상태이상 코루틴 ---
+    // 화상 코루틴
 
     IEnumerator BurnRoutine()
     {
@@ -292,21 +269,20 @@ public class MonsterController : MonoBehaviour
         }
     }
 
-    // 2. 감전: 가다 서다 반복
+    // 감전 코르틴
     IEnumerator ParalysisRoutine()
     {
         while (currentHP > 0)
         {
-            // 1초 동안 정상 이동
+            // 2초 동안 정상 이동
             yield return new WaitForSeconds(2.0f);
 
-            // 현재 속도 저장 (얼음 맞았으면 느린 속도가 저장됨)
+            // 현재 속도 저장 
             float savedSpeed = moveSpeed;
 
-            // 속도를 0으로 만들어 멈춤
             moveSpeed = 0;
 
-            // 0.5초 대기 (마비)
+            // 0.5초 마비
             yield return new WaitForSeconds(0.5f);
 
 
@@ -314,7 +290,7 @@ public class MonsterController : MonoBehaviour
             moveSpeed = savedSpeed;
         }
     }
-    IEnumerator BossFireballRoutine()
+    IEnumerator BossFireballRoutine() // 파이어볼 5연속 발사 구현을 ai의 도움을 받았습니다
     {
         // 1. 애니메이션은 처음에 한 번만 실행
         animator.SetTrigger("Fireball");
@@ -357,7 +333,7 @@ public class MonsterController : MonoBehaviour
         Destroy(gameObject, 1.5f);
     }
 
-    void CheckDistance()
+    void CheckDistance() // 몬스터가 플레이어와 너무 멀어질 경우 삭제시키는 코드
     {
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
         if (distanceToPlayer >= deadRange)

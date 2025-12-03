@@ -24,7 +24,7 @@ public class UIEvent : MonoBehaviour
         switch (gameObject.name)
         {
             case "Ice Choice":
-                GameManager.selectedElement = "Ice"; // 메모장에 기록
+                GameManager.selectedElement = "Ice";
                 break;
             case "Fire Choice":
                 GameManager.selectedElement = "Fire";
@@ -38,7 +38,7 @@ public class UIEvent : MonoBehaviour
 
     }
 
-    public void damageMethodChoice()
+    public void damageMethodChoice() // 씬 내부의 모든 스킬 조이스틱에게 명령을 내리는 부분을 ai의 도움을 받았습니다.
     {
         switch (gameObject.name)
         {
@@ -53,7 +53,7 @@ public class UIEvent : MonoBehaviour
 
         Debug.Log("메서드 실행 - 모든 조이스틱 업데이트 시작");
 
-        // 2. [핵심 수정] 씬에 있는 '모든' SkillManager을 찾아서 배열에 담습니다.
+        // 2. 씬에 있는 '모든' SkillManager을 찾아서 배열에 담습니다.
         SkillManager[] allJoysticks = FindObjectsByType<SkillManager>(FindObjectsSortMode.None);
 
         // 3. 반복문(foreach)을 돌면서 하나하나 명령을 내립니다.

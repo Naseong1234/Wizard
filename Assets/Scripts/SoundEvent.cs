@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class SoundEvent : MonoBehaviour
 {
+    // 이 스크립트는 예전에 전시회에 출품한 boss라는 게임 만들때 사용했어서 그때 경험을 활용해서 만들었습니다.
     public static SoundEvent instance = null;
 
     public AudioClip[] sounds;
@@ -37,7 +38,7 @@ public class SoundEvent : MonoBehaviour
                         break;
 
                     case "Teleport":
-                        audioSource.PlayOneShot(clip,0.5f); // 40% 크기로 재생
+                        audioSource.PlayOneShot(clip,0.5f);
 
                         break;
 

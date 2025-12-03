@@ -53,16 +53,14 @@ public class GameManager : MonoBehaviour
     bool Level1Event = false;
     bool Level5Event = false;
     bool Level10Event = false;
-
-    // [추가됨] 승리 연출이 시작되었는지 확인하는 플래그
-    private bool isVictorySequenceStarted = false;
+    bool isVictorySequenceStarted = false;
 
     public static float playerHP
     {
         get { return currentHP; }
         set
         {
-            currentHP = value; // 값 적용
+            currentHP = value;
 
             if (currentHP > maxHP)
             {
@@ -98,7 +96,7 @@ public class GameManager : MonoBehaviour
         currentHP = maxHP;
         bossCurrentHP = bossMaxHP;
         currentLevel = 1;
-        isVictorySequenceStarted = false; // 초기화
+        isVictorySequenceStarted = false; 
     }
 
     void Update()
@@ -174,7 +172,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void UpdateUIBars()
+    void UpdateUIBars()// HP,EXP 바 갱신 부분은 ai의 도움을 받았습니다
     {
         LevelText.text = "Level " + currentLevel;
         WaveText.text = "Wave " + currentLevel;
@@ -203,20 +201,21 @@ public class GameManager : MonoBehaviour
             homeButten.SetActive(true);
         }
 
-        // [수정됨] 보스 체력이 0이고, 아직 승리 연출이 시작되지 않았을 때만 실행
+        //보스 체력이 0이고, 아직 승리 연출이 시작되지 않았을 때만 실행
         if (bossHP <= 0 && !isVictorySequenceStarted)
         {
             StartCoroutine(VictoryRoutine());
         }
     }
 
-    // [추가됨] 3초 대기 후 승리 화면을 띄우는 코루틴
+    //3초 대기 후 승리 화면을 띄우는 코루틴
     IEnumerator VictoryRoutine()
     {
         // 1. 중복 실행 방지 플래그 켜기
         isVictorySequenceStarted = true;
 
-        // 2. 3초 동안 대기 (이 동안 보스의 사망 애니메이션이 재생됨)
+
+        // 2. 2초 동안 대기 (이 동안 보스의 사망 애니메이션이 재생됨)
         yield return new WaitForSeconds(2.0f);
 
         // 3. UI 켜기 및 시간 정지
@@ -224,6 +223,6 @@ public class GameManager : MonoBehaviour
         restartButten.SetActive(true);
         homeButten.SetActive(true);
 
-        Time.timeScale = 0; // 모든 처리가 끝난 뒤에 시간을 멈춤
+        Time.timeScale = 0;
     }
 }
