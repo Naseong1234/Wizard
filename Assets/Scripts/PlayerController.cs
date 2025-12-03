@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour
         if (TeleportTimer < TeleportCool) TeleportTimer = Mathf.Clamp(TeleportTimer + Time.deltaTime, 0, TeleportCool);
     }
 
-    void playerMove() // 조이스틱을 통해 이동하는 부분을 ai의 도움을 받았습니다
+    void playerMove()
     {
         int groundMask = LayerMask.GetMask("Ground");
         Vector3 rayOrigin = transform.position + Vector3.up * 0.3f;
@@ -79,6 +79,9 @@ public class PlayerController : MonoBehaviour
         // 1. 조이스틱 입력 받기
         float h = joystick.Horizontal;
         float v = joystick.Vertical;
+
+        // [수정됨] 조이스틱 입력이 없을 때만(PC 테스트용) 키보드 입력을 받음
+        if (h == 0 && v == 0)
         {
             h = Input.GetAxisRaw("Horizontal");
             v = Input.GetAxisRaw("Vertical");
@@ -89,7 +92,6 @@ public class PlayerController : MonoBehaviour
         // 2. 이동 로직 (관성 제거)
         if (inputDir.magnitude >= 0.1f)
         {
-            
             Vector3 direction = inputDir.normalized;
 
             // 회전 처리
@@ -100,6 +102,7 @@ public class PlayerController : MonoBehaviour
             // 이동 방향 계산 (카메라 기준)
             Vector3 moveDir = Quaternion.Euler(0f, targetAngle, 0f) * Vector3.forward;
 
+            // [핵심] 속도를 직접 대입하여 가속도/관성 없이 즉시 이동
             Vector3 moveVelocity = moveDir * speed;
             rb.linearVelocity = new Vector3(moveVelocity.x, rb.linearVelocity.y, moveVelocity.z);
 
@@ -107,8 +110,9 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            // [핵심] 입력이 없으면 속도를 즉시 0으로 만들어 멈춤 (관성 제거)
             rb.linearVelocity = new Vector3(0f, rb.linearVelocity.y, 0f);
-            rb.angularVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero; // 회전 관성도 제거
 
             animator.SetBool("isWalking", false);
         }
