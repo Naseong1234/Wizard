@@ -80,7 +80,7 @@ public class PlayerController : MonoBehaviour
         float h = joystick.Horizontal;
         float v = joystick.Vertical;
 
-        // [수정됨] 조이스틱 입력이 없을 때만(PC 테스트용) 키보드 입력을 받음
+        // 조이스틱 입력이 없을 때만(PC 테스트용) 키보드 입력을 받음
         if (h == 0 && v == 0)
         {
             h = Input.GetAxisRaw("Horizontal");
